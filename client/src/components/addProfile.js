@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaPlus } from "react-icons/fa"; // For the "Add" icon
+import { FaPlus } from "react-icons/fa"; 
 import axios from "../axios";
 
 function AddProfileForm() {
@@ -288,7 +288,7 @@ const styles = {
     outline: 'none',
     transition: 'border-color 0.3s',
     boxSizing: 'border-box',
-    width: '100%',  // Ensures the input fields occupy the full width
+    width: '100%',  
   },
   textarea: {
     padding: '14px 18px',
@@ -302,7 +302,7 @@ const styles = {
     minHeight: '120px',
     transition: 'border-color 0.3s',
     boxSizing: 'border-box',
-    width: '100%',  // Ensures the textarea occupies the full width
+    width: '100%',  
   },
   submitButton: {
     padding: '14px 18px',

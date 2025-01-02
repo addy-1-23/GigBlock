@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
-import AddJobForm from "./addJob";
+import { useNavigate } from 'react-router-dom'; 
+
 import { MessageCircle, Settings, Home, FileText, Link, User } from 'lucide-react';
 
 const Container = styled.div`
@@ -145,10 +145,9 @@ const AddProfileButton = styled.button`
 `;
 
 const App = () => {
-  const navigate = useNavigate(); // Get navigate function using useNavigate hook
-
+  const navigate = useNavigate(); 
   const handleAddJobClick = () => {
-    navigate("/contract/addJob"); // Navigate to the add job page
+    navigate("/contract/addJob"); 
   };
 
   return (

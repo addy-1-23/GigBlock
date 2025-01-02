@@ -33,10 +33,8 @@ app.post("/jobs/add", async (req, res) => {
   try {
     console.log("Received job detail:", jobDetail);
 
-    // Create a new job instance
     const newJob = new Job(jobDetail);
 
-    // Save the job to the database
     await newJob.save();
 
     console.log("Job saved to database:", newJob);
@@ -53,10 +51,7 @@ app.post('/profiles/add', async (req, res) => {
   try {
     const profileData = req.body;
 
-    // Create a new Profile instance
     const newProfile = new Profile(profileData);
-
-    // Save the profile to the database
     await newProfile.save();
 
     res.status(201).send("Profile added successfully");
@@ -77,7 +72,7 @@ app.get('/profiles/get', async (req, res) => {
   }
 });
 
-
+// Fetch jobs
 app.get('/jobs/get', async (req, res) => {
   try {
     const jobs = await Job.find(); // Fetch all jobs

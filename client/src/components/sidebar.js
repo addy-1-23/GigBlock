@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom'; 
 import { MessageCircle, Settings, Home, FileText, Link, User } from 'lucide-react';
 
-// Container component for the whole app
+
 const Container = styled.div`
   min-height: 100vh;
   display: flex;
@@ -13,7 +13,6 @@ const Container = styled.div`
   font-family: 'Inter', sans-serif;
 `;
 
-// Sidebar component
 const Sidebar = styled.aside`
   width: 240px;
   background-color: #000000;
@@ -28,7 +27,6 @@ const Sidebar = styled.aside`
   flex-direction: column;
 `;
 
-// Sidebar Logo container
 const SidebarLogo = styled.div`
   display: flex;
   align-items: center;
@@ -38,7 +36,7 @@ const SidebarLogo = styled.div`
   font-weight: 600;
 `;
 
-// Logo icon styling
+
 const LogoIcon = styled.div`
   width: 70px;
   height: 70px;
@@ -53,7 +51,7 @@ const LogoIcon = styled.div`
   margin-left: 20px;
 `;
 
-// Add Button component
+
 const AddButton = styled.button`
   width: 100%;
   padding: 12px;
@@ -66,12 +64,12 @@ const AddButton = styled.button`
   transition: background-color 0.2s;
 `;
 
-// Navigation Section for links
+
 const NavSection = styled.nav`
   margin-bottom: 24px;
 `;
 
-// Navigation label
+
 const NavLabel = styled.div`
   font-size: 12px;
   color: #6b7280;
@@ -80,7 +78,7 @@ const NavLabel = styled.div`
   letter-spacing: 1px;
 `;
 
-// Navigation button component
+
 const NavButton = styled.button`
   width: 100%;
   padding: 10px 12px;
@@ -108,7 +106,7 @@ const NavButton = styled.button`
   }
 `;
 
-const navigate = useNavigate(); // Get navigate function using useNavigate hook
+const navigate = useNavigate(); 
 
   const handleContract = () => {
     navigate("/contract"); 

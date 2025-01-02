@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from "../axios"; // Make sure this is configured correctly to point to your backend API.
+import axios from "../axios"; 
 
 const styles = {
   cardsContainer: {
@@ -10,8 +10,8 @@ const styles = {
     padding: '16px',
   },
   card: {
-    width: '300px', // Fixed width for the card
-    height: '400px', // Fixed height for the card
+    width: '300px',
+    height: '400px',
     padding: '16px',
     backgroundColor: '#ffffff',
     borderRadius: '8px',
@@ -20,12 +20,12 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     gap: '8px',
-    overflow: 'hidden', // Ensures the content doesn't overflow the card
+    overflow: 'hidden',
   },
   cardContent: {
-    flex: '1', // Takes up remaining height
-    overflowY: 'auto', // Makes the content scrollable
-    paddingRight: '8px', // Adds space for the scrollbar
+    flex: '1',
+    overflowY: 'auto',
+    paddingRight: '8px',
   },
   cardHeader: {
     fontWeight: 'bold',
@@ -66,7 +66,7 @@ function ProfileCards() {
     const fetchProfiles = async () => {
       try {
         const response = await axios.get("/profiles/get");
-        setProfiles(response.data); // Assuming response.data is the array of profiles.
+        setProfiles(response.data);
       } catch (error) {
         console.error("Error fetching profiles:", error.message);
       }

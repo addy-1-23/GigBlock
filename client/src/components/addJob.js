@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { FaPlus } from 'react-icons/fa';  // For the "Add" icon
+import { FaPlus } from 'react-icons/fa';  
 import styled from 'styled-components';
 import axios from '../axios';
 
-// Styled Components (remains the same)
+// Styled Components 
 const FormContainer = styled.div`
   background-color: #f7f9fc;
   padding: 32px;

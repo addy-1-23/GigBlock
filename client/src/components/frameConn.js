@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { MessageCircle, Settings, Home, FileText, Link, User } from 'lucide-react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
+import { useNavigate } from 'react-router-dom'; 
 
 const Container = styled.div`
   min-height: 100vh;
@@ -149,10 +149,10 @@ const AddProfileButton = styled.button`
 `;
 
 function App() {
-  const navigate = useNavigate(); // Get navigate function using useNavigate hook
+  const navigate = useNavigate(); 
 
   const handleAddProfileClick = () => {
-    navigate("/connect/addProf"); // Navigate to the add profile page
+    navigate("/connect/addProf"); 
   };
 
   return (
@@ -170,7 +170,7 @@ function App() {
             <NavButton
               key={item.label}
               className={item.label === 'Connect' ? 'connect' : ''}
-              onClick={() => navigate(`/${item.label.toLowerCase()}`)} // Navigate to corresponding page
+              onClick={() => navigate(`/${item.label.toLowerCase()}`)} 
             >
               <item.icon size={20} />
               {item.label}
@@ -181,7 +181,7 @@ function App() {
 
       {/* Main Content */}
       <Main>
-        {/* Search Bar with Add Profile Button */}
+        
         <SearchBarContainer>
           <SearchBar placeholder="Search..." />
           <AddProfileButton onClick={handleAddProfileClick}>Add Profile</AddProfileButton>
