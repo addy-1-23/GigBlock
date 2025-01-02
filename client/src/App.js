@@ -6,6 +6,8 @@ import Contract from "./webpages/jobListings";
 import styled from "styled-components";
 import Conn from"./components/addProfile";
 import Job from"./components/addJob";
+import Login from "./components/login";
+import SignUp from "./components/signUp";
 
 function App() {
   return (
@@ -17,8 +19,8 @@ function App() {
           <Route path="/contract" element={<Contract />} />
           <Route path="/connect/addProf" element={<Conn />} />
           <Route path="/contract/addJob" element={<Job />} />
-
-
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
         </Routes>
       </Container>
     </Router>
