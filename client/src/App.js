@@ -6,6 +6,7 @@ import Contract from "./webpages/jobListings";
 import styled from "styled-components";
 import Conn from"./components/addProfile";
 import Job from"./components/addJob";
+
 function App() {
   return (
     <Router>
@@ -16,6 +17,8 @@ function App() {
           <Route path="/contract" element={<Contract />} />
           <Route path="/connect/addProf" element={<Conn />} />
           <Route path="/contract/addJob" element={<Job />} />
+
+
         </Routes>
       </Container>
     </Router>
@@ -24,7 +27,7 @@ function App() {
 
 const Container = styled.div`
   
-  min-height: 100vh;  // Ensures the container spans the full height of the viewport
+  min-height: 100vh;  
 `;
 
 export default App;

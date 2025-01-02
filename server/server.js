@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 // Importing the Job schema
 const Job = require('./Jobs');
 
-//Importing profile schema
+// Importing the Profile schema
 const Profile = require('./Profiles');
 
 const app = express();
@@ -26,7 +26,7 @@ app.use(cors());
 // API creation
 app.get('/', (req, res) => res.status(200).send("API RUNNING"));
 
-// Add job
+// Add Job
 app.post("/jobs/add", async (req, res) => {
   const jobDetail = req.body;
 
@@ -48,7 +48,7 @@ app.post("/jobs/add", async (req, res) => {
   }
 });
 
-//Add Profile
+// Add Profile
 app.post('/profiles/add', async (req, res) => {
   try {
     const profileData = req.body;
@@ -66,6 +66,27 @@ app.post('/profiles/add', async (req, res) => {
   }
 });
 
+// Fetch Profiles
+app.get('/profiles/get', async (req, res) => {
+  try {
+    const profiles = await Profile.find(); // Fetch all profiles
+    res.status(200).send(profiles);
+  } catch (err) {
+    console.error("Error fetching profiles:", err.message);
+    res.status(500).send({ error: "Failed to fetch profiles", details: err.message });
+  }
+});
+
+
+app.get('/jobs/get', async (req, res) => {
+  try {
+    const jobs = await Job.find(); // Fetch all jobs
+    res.status(200).send(jobs);
+  } catch (err) {
+    console.error("Error fetching jobs:", err.message);
+    res.status(500).send({ error: "Failed to fetch jobs", details: err.message });
+  }
+});
 
 // Start the server
-app.listen(port, () => console.log("API rendered on port", port));
+app.listen(port, () => console.log(`API running on port ${port}`));

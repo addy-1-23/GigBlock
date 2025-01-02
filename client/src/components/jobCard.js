@@ -1,134 +1,121 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import axios from "../axios"; // Ensure this points to your backend API
 
-const CardsContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  justify-content: center;
-  padding: 16px 0;
-`;
+const styles = {
+  cardsContainer: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "16px",
+    justifyContent: "center",
+    padding: "16px",
+  },
+  card: {
+    width: "300px", // Fixed width for the card
+    height: "400px", // Fixed height for the card
+    padding: "16px",
+    backgroundColor: "#ffffff",
+    borderRadius: "8px",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    color: "#333",
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+    overflow: "hidden", // Ensures the content doesn't overflow the card
+  },
+  cardContent: {
+    flex: "1", // Takes up remaining height
+    overflowY: "auto", // Makes the content scrollable
+    paddingRight: "8px", // Adds space for the scrollbar
+  },
+  cardHeader: {
+    fontWeight: "bold",
+    fontSize: "18px",
+    color: "#3b82f6",
+  },
+  cardField: {
+    display: "flex",
+    flexDirection: "column",
+    marginBottom: "8px",
+  },
+  cardLabel: {
+    fontSize: "14px",
+    fontWeight: "bold",
+    color: "#666",
+  },
+  cardValue: {
+    fontSize: "16px",
+  },
+  skillsContainer: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "8px",
+  },
+  skill: {
+    backgroundColor: "#e0f2fe",
+    color: "#0369a1",
+    padding: "4px 8px",
+    borderRadius: "4px",
+    fontSize: "14px",
+  },
+};
 
-const Card = styled.div`
-  flex: 1 1 calc(50% - 16px);
-  max-width: calc(50% - 16px);
-  padding: 16px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  color: #333;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-left: 16px;
-`;
+function JobCards() {
+  const [jobs, setJobs] = useState([]);
 
-const CardHeader = styled.div`
-  font-weight: bold;
-  font-size: 18px;
-  color: #3b82f6;
-`;
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await axios.get("/jobs/get");
+        setJobs(response.data); // Assuming response.data is the array of jobs
+      } catch (error) {
+        console.error("Error fetching jobs:", error.message);
+      }
+    };
 
-const CardField = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const CardLabel = styled.div`
-  font-size: 14px;
-  font-weight: bold;
-  color: #666;
-`;
-
-const CardValue = styled.div`
-  font-size: 16px;
-`;
-
-const SkillsContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-`;
-
-const Skill = styled.div`
-  background-color: #e0f2fe;
-  color: #0369a1;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 14px;
-`;
-
-function App() {
-  const jobListings = [
-    {
-      position_name: "Software Engineer",
-      company_name: "TechCorp",
-      about_company: "TechCorp is a leading software development company specializing in web development.",
-      job_description: "We are looking for a software engineer to join our development team and work on cutting-edge projects.",
-      skillset_required: ["Java", "Spring Boot", "Microservices", "REST API"],
-      pay_range: "$60,000 - $80,000 per year",
-      work_mode: "Hybrid",
-      job_location: "San Francisco, CA",
-    },
-    {
-      position_name: "UI/UX Designer",
-      company_name: "DesignHub",
-      about_company: "DesignHub is a creative agency focusing on innovative UI/UX design solutions.",
-      job_description: "We're seeking a talented UI/UX designer to create user-centric designs for web and mobile applications.",
-      skillset_required: ["Sketch", "Figma", "Adobe XD", "Wireframing"],
-      pay_range: "$70,000 - $90,000 per year",
-      work_mode: "Remote",
-      job_location: "New York, NY",
-    },
-    {
-      position_name: "Data Scientist",
-      company_name: "AIWorks",
-      about_company: "AIWorks is a company dedicated to building AI-driven solutions for business intelligence.",
-      job_description: "Join our team as a data scientist to work on machine learning models and AI algorithms.",
-      skillset_required: ["Python", "TensorFlow", "Pandas", "Machine Learning"],
-      pay_range: "$100,000 - $120,000 per year",
-      work_mode: "In-office",
-      job_location: "Austin, TX",
-    },
-  ];
+    fetchJobs();
+  }, []);
 
   return (
-    <CardsContainer>
-      {jobListings.map((job, index) => (
-        <Card key={index}>
-          <CardHeader>{job.position_name} - {job.company_name}</CardHeader>
-          <CardField>
-            <CardLabel>About Company</CardLabel>
-            <CardValue>{job.about_company}</CardValue>
-          </CardField>
-          <CardField>
-            <CardLabel>Job Description</CardLabel>
-            <CardValue>{job.job_description}</CardValue>
-          </CardField>
-          <CardField>
-            <CardLabel>Skills Required</CardLabel>
-            <SkillsContainer>
-              {job.skillset_required.map((skill, idx) => (
-                <Skill key={idx}>{skill}</Skill>
+    <div style={styles.cardsContainer}>
+      {jobs.map((job, index) => (
+        <div key={index} style={styles.card}>
+          <div style={styles.cardHeader}>
+            {job.positionName} - {job.companyName}
+          </div>
+          <div style={styles.cardField}>
+            <div style={styles.cardLabel}>About Company</div>
+            <div style={styles.cardValue}>{job.aboutCompany}</div>
+          </div>
+          <div style={styles.cardField}>
+            <div style={styles.cardLabel}>Job Description</div>
+            <div style={styles.cardValue}>{job.jobDescription}</div>
+          </div>
+          <div style={styles.cardField}>
+            <div style={styles.cardLabel}>Skills Required</div>
+            <div style={styles.skillsContainer}>
+              {job.skillsetRequired.map((skill, idx) => (
+                <div key={idx} style={styles.skill}>
+                  {skill}
+                </div>
               ))}
-            </SkillsContainer>
-          </CardField>
-          <CardField>
-            <CardLabel>Pay Range</CardLabel>
-            <CardValue>{job.pay_range}</CardValue>
-          </CardField>
-          <CardField>
-            <CardLabel>Work Mode</CardLabel>
-            <CardValue>{job.work_mode}</CardValue>
-          </CardField>
-          <CardField>
-            <CardLabel>Location</CardLabel>
-            <CardValue>{job.job_location}</CardValue>
-          </CardField>
-        </Card>
+            </div>
+          </div>
+          <div style={styles.cardField}>
+            <div style={styles.cardLabel}>Pay Range</div>
+            <div style={styles.cardValue}>{job.payRange}</div>
+          </div>
+          <div style={styles.cardField}>
+            <div style={styles.cardLabel}>Work Mode</div>
+            <div style={styles.cardValue}>{job.workMode}</div>
+          </div>
+          <div style={styles.cardField}>
+            <div style={styles.cardLabel}>Location</div>
+            <div style={styles.cardValue}>{job.jobLocation}</div>
+          </div>
+        </div>
       ))}
-    </CardsContainer>
+    </div>
   );
 }
 
-export default App;
+export default JobCards;
