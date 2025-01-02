@@ -57,10 +57,34 @@ const styles = {
     borderRadius: '4px',
     fontSize: '14px',
   },
+  pagination: {
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '16px',
+    gap: '8px',
+  },
+  paginationButton: {
+    padding: '8px 16px',
+    backgroundColor: '#3b82f6',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+  },
+  paginationText: {
+    display: 'flex',
+    alignItems: 'center',
+    fontSize: '16px',
+  },
+  arrow: {
+    fontSize: '20px',
+  },
 };
 
 function ProfileCards() {
   const [profiles, setProfiles] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [cardsPerPage, setCardsPerPage] = useState(6); // Default to 6 cards per page
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -75,45 +99,106 @@ function ProfileCards() {
     fetchProfiles();
   }, []);
 
+  // Calculate total pages
+  const totalPages = Math.ceil(profiles.length / cardsPerPage);
+
+  // Handle the current profiles to show based on page
+  const currentProfiles = profiles.slice(
+    (currentPage - 1) * cardsPerPage,
+    currentPage * cardsPerPage
+  );
+
+  // Handle page change
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Handle change in cards per page
+  const handleCardsPerPageChange = (event) => {
+    setCardsPerPage(Number(event.target.value));
+    setCurrentPage(1); // Reset to first page when changing cards per page
+  };
+
   return (
-    <div style={styles.cardsContainer}>
-      {profiles.map((profile, index) => (
-        <div key={index} style={styles.card}>
-          <div style={styles.cardHeader}>{profile.username}</div>
-          <div style={styles.cardField}>
-            <div style={styles.cardLabel}>Bio</div>
-            <div style={styles.cardValue}>{profile.bio}</div>
-          </div>
-          <div style={styles.cardField}>
-            <div style={styles.cardLabel}>Date of Birth</div>
-            <div style={styles.cardValue}>
-              {new Date(profile.dateOfBirth).toLocaleDateString()}
+    <div>
+      <div style={styles.cardsContainer}>
+        {currentProfiles.map((profile, index) => (
+          <div key={index} style={styles.card}>
+            <div style={styles.cardHeader}>{profile.username}</div>
+            <div style={styles.cardField}>
+              <div style={styles.cardLabel}>Bio</div>
+              <div style={styles.cardValue}>{profile.bio}</div>
+            </div>
+            <div style={styles.cardField}>
+              <div style={styles.cardLabel}>Date of Birth</div>
+              <div style={styles.cardValue}>
+                {new Date(profile.dateOfBirth).toLocaleDateString()}
+              </div>
+            </div>
+            <div style={styles.cardField}>
+              <div style={styles.cardLabel}>Email</div>
+              <div style={styles.cardValue}>{profile.emailId}</div>
+            </div>
+            <div style={styles.cardField}>
+              <div style={styles.cardLabel}>Contact</div>
+              <div style={styles.cardValue}>{profile.contactNumber}</div>
+            </div>
+            <div style={styles.cardField}>
+              <div style={styles.cardLabel}>Skills</div>
+              <div style={styles.skillsContainer}>
+                {profile.skills.map((skill, idx) => (
+                  <div key={idx} style={styles.skill}>
+                    {skill}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div style={styles.cardField}>
+              <div style={styles.cardLabel}>Experience</div>
+              <div style={styles.cardValue}>{profile.experience}</div>
             </div>
           </div>
-          <div style={styles.cardField}>
-            <div style={styles.cardLabel}>Email</div>
-            <div style={styles.cardValue}>{profile.emailId}</div>
-          </div>
-          <div style={styles.cardField}>
-            <div style={styles.cardLabel}>Contact</div>
-            <div style={styles.cardValue}>{profile.contactNumber}</div>
-          </div>
-          <div style={styles.cardField}>
-            <div style={styles.cardLabel}>Skills</div>
-            <div style={styles.skillsContainer}>
-              {profile.skills.map((skill, idx) => (
-                <div key={idx} style={styles.skill}>
-                  {skill}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div style={styles.cardField}>
-            <div style={styles.cardLabel}>Experience</div>
-            <div style={styles.cardValue}>{profile.experience}</div>
-          </div>
+        ))}
+      </div>
+
+      <div style={styles.pagination}>
+        <select onChange={handleCardsPerPageChange} value={cardsPerPage}>
+          <option value={6}>6 per page</option>
+          <option value={9}>9 per page</option>
+          <option value={12}>12 per page</option>
+        </select>
+        <button
+          style={styles.paginationButton}
+          onClick={() => handlePageChange(1)}
+          disabled={currentPage === 1}
+        >
+          <span style={styles.arrow}>«</span>
+        </button>
+        <button
+          style={styles.paginationButton}
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          <span style={styles.arrow}>←</span>
+        </button>
+        <div style={styles.paginationText}>
+          {currentPage} of {totalPages}
         </div>
-      ))}
+        <button
+          style={styles.paginationButton}
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          <span style={styles.arrow}>→</span>
+        </button>
+        <button
+          style={styles.paginationButton}
+          onClick={() => handlePageChange(totalPages)}
+          disabled={currentPage === totalPages}
+        >
+          <span style={styles.arrow}>»</span>
+        </button>
+      </div>
     </div>
   );
 }

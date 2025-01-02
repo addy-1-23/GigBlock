@@ -172,7 +172,7 @@ const App = () => {
 
       {/* Main Content */}
       <Main>
-        {/* Search Bar with Add Job Button */}
+        
         <SearchBarContainer>
           <SearchBar
             type="text"
