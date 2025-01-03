@@ -21,7 +21,7 @@ function Login() {
       const res = await axios.post("/auth/login", { email, password });
       alert("Login successful!");
       console.log(res.data); // User data
-      navigate("/"); // Redirect to the home page or dashboard
+      navigate("/profile"); // Redirect to the home page or dashboard
     } catch (err) {
       console.error(err);
       if (err.response && err.response.data.error) {
@@ -34,7 +34,7 @@ function Login() {
 
   return (
     <Container>
-      <Logo onClick={() => navigate("/")}>
+      <Logo onClick={() => navigate("/profile")}>
         <img src="./logo.png" alt="GigBlock Logo" />
       </Logo>
       <FormContainer>

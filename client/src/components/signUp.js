@@ -83,7 +83,7 @@ function SignUp() {
 
   return (
     <Container>
-      <Logo onClick={() => navigate("/")}>
+      <Logo onClick={() => navigate("/profile")}>
         <img src="./logo.png" alt="GigBlock Logo" />
       </Logo>
       <FormContainer>
