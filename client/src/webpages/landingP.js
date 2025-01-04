@@ -1,294 +1,336 @@
-import React, { useEffect, useRef, useState } from 'react';
-import styled, { createGlobalStyle } from 'styled-components';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { ChevronRight, Zap, Globe, Users, TrendingUp } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react'
+import { motion, useScroll, useMotionValue, animate } from 'framer-motion'
+import { ChevronRight, Zap, Globe, Users, TrendingUp, ArrowRight } from 'lucide-react'
+import './App.css'
+import { useNavigate } from 'react-router-dom';
 
-const GlobalStyle = createGlobalStyle`
-  body {
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa;
-    color: #333;
-  }
-  *, *::before, *::after {
-    box-sizing: border-box;
-  }
-`;
 
-const GradientText = styled.span`
-  background-clip: text;
-  color: transparent;
-  background-image: linear-gradient(to right, #6b46c1, #4299e1);
-`;
+const GradientText = ({ children, className = '' }) => {
+  return (
+    <span className={`gradient-text ${className}`}>
+      {children.split('').map((char, index) => (
+        <motion.span
+          key={index}
+          className="gradient-text-letter"
+          whileHover={{
+            y: -10,
+            textShadow: '0px 5px 15px rgba(0, 0, 0, 0.3)',
+            scale: 1.1,
+          }}
+          transition={{ type: 'spring', stiffness: 300 }}
+        >
+          {char}
+        </motion.span>
+      ))}
+    </span>
+  )
+}
 
-const Header = styled.header`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 50;
-  background: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-`;
 
-const Nav = styled.nav`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
 
-const LogoContainer = styled.div`
-  display: flex;
-  align-items: center;
-`;
+const Card = ({ icon: Icon, title, description }) => (
+  <motion.div
+    className="card"
+    whileHover={{ y: -5 }}
+  >
+    <Icon className="card-icon" />
+    <h3 className="card-title">{title}</h3>
+    <p className="card-description">{description}</p>
+  </motion.div>
+)
 
-const Logo = styled.div`
-  background: #000;
-  color: #fff;
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  margin-right: 0.5rem;
-`;
+const ScrollingCard = ({ title, description, backgroundImage }) => (
+  <motion.div
+  
+    className="scrolling-card"
+    style={{ 
+      backgroundImage: `linear-gradient(rgba(234, 218, 218, 0), rgba(0, 0, 0, 0.8)), url(${backgroundImage})`,
+    }}
+    
+    whileHover={{ scale: 1.05 }}
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.5 }}
+  >
+    <h3 className="scrolling-card-title">{title}</h3>
+    <p className="scrolling-card-description">{description}</p>
+  </motion.div>
+)
 
-const NavLink = styled.a`
-  color: #333;
-  margin: 0 0.5rem;
-  text-decoration: none;
-  font-weight: 500;
-  &:hover {
-    color: #6b46c1;
-  }
-`;
+const ScrollingCards = () => {
+  const scrollRef = useRef(null)
+  const [containerWidth, setContainerWidth] = useState(0)
+  const x = useMotionValue(0)
 
-const ThemeButton = styled.button`
-  background: #e2e8f0;
-  border: none;
-  border-radius: 50%;
-  padding: 0.5rem;
-  cursor: pointer;
-  transition: background 0.3s;
-  &:hover {
-    background: #cbd5e0;
-  }
-`;
-
-const HeroSection = styled.section`
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 2rem;
-  background: linear-gradient(to bottom, #edf2f7, #fff);
-`;
-
-const HeroButton = styled(motion.button)`
-  background: linear-gradient(to right, #6b46c1, #4299e1);
-  color: #fff;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 30px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: transform 0.3s;
-  &:hover {
-    transform: scale(1.05);
-  }
-  &:active {
-    transform: scale(0.95);
-  }
-`;
-
-const Section = styled.section`
-  padding: 4rem 2rem;
-  background: ${props => (props.bg ? props.bg : 'transparent')};
-`;
-
-const SectionTitle = styled.h2`
-  text-align: center;
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-`;
-
-const CardsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-`;
-
-const Card = styled(motion.div)`
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
-  text-align: center;
-  transition: transform 0.3s, box-shadow 0.3s;
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-  }
-`;
-
-const ScrollingCardsContainer = styled.div`
-  display: flex;
-  gap: 1rem;
-  overflow-x: auto;
-  padding: 1rem;
-  scroll-snap-type: x mandatory;
-  & > * {
-    scroll-snap-align: center;
-  }
-`;
-
-const ScrollingCard = styled(motion.div)`
-  flex: 0 0 300px;
-  height: 400px;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  text-align: center;
-  background-image: ${props => `linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url(${props.background})`};
-  background-size: cover;
-  background-position: center;
-`;
-
-export default function GigBlock() {
-  const [isDark, setIsDark] = useState(false);
-  const { scrollYProgress } = useScroll();
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-    if (isDark) {
-      document.documentElement.classList.remove('dark');
-    } else {
-      document.documentElement.classList.add('dark');
+  useEffect(() => {
+    const updateContainerWidth = () => {
+      if (scrollRef.current) {
+        setContainerWidth(scrollRef.current.offsetWidth)
+      }
     }
-  };
+
+    updateContainerWidth()
+    window.addEventListener('resize', updateContainerWidth)
+
+    return () => window.removeEventListener('resize', updateContainerWidth)
+  }, [])
+
+  const opportunities = [
+    { 
+      title: "Singer ", 
+      description: "Express emotions through powerful vocals and captivating performances.",
+      backgroundImage: "https://t3.ftcdn.net/jpg/03/35/61/94/360_F_335619416_FUfMwM82oomNuLVpYZDaRmqWysnldkbj.jpg"
+      
+    },
+    { 
+      title: "Dancer", 
+      description: "Tell stories and convey emotion through graceful and dynamic movement..",
+      backgroundImage: "https://imgs.search.brave.com/O_pFatsKoJzZy03W67yKC-2tVIJ1AyfTqIUt7YkoP2E/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzAxLzc0LzkxLzI4/LzM2MF9GXzE3NDkx/Mjg5OF9ZR3lESE5T/TDhiNk1GbERxWTdh/MzZTUXAzNTZHTDBM/ai5qcGc",
+      ObjectFit: "cover"
+     
+    },
+    
+    { 
+      title: "Pianist ", 
+      description: "Create beautiful melodies and harmonies with the piano.",
+      backgroundImage: "https://imgs.search.brave.com/jVynVawXKK0zMqTBCA4iFiC1Yvb9y_YUe4k2I47Nld8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzE0LzY1Lzgz/LzM2MF9GXzIxNDY1/ODM0MF9MdXkwc0JZ/T01uSWdCUG45dUhr/MWVzSGtTZHJLUGJt/Yi5qcGc?text=piano"
+    },
+    { 
+      title: "Guitarist", 
+      description: "Strum and pick your way to musical expression and creativity.",
+      backgroundImage: "https://imgs.search.brave.com/0dsRfgILZ06xL_1Ket5yNf9qSjN0fMPxUBYLQ0dC0pI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzAxLzMxLzgyLzE0/LzM2MF9GXzEzMTgy/MTQyMV9pUzh5V0xH/TUU1SmxwZzZRZDNm/WlBSS0JVbTZLRnRR/bi5qcGc?text=guitar"
+    },
+    { 
+      title: "Animator", 
+      description: "Bring characters and worlds to life through animation.",
+      backgroundImage: "https://media.tenor.com/3CAcy1xJSIcAAAAe/anime-dark-boy-cool-kid.png"
+    },
+  ]
+
+
+  const totalWidth = opportunities.length * 280 // 280px per card (including margins)
+
+  useEffect(() => {
+    const animation = animate(x, -totalWidth, {
+      type: "tween",
+      duration: 40,
+      ease: "linear",
+      repeat: Infinity,
+      repeatType: "loop",
+    })
+
+    return () => animation.stop()
+  }, [x, totalWidth])
 
   return (
-    <div>
-      <GlobalStyle />
-      <Header>
-        <Nav>
-          <LogoContainer>
-            <Logo>G</Logo>
-            <GradientText>GigBlock</GradientText>
-          </LogoContainer>
-          <div>
-            <NavLink href="#features">Features</NavLink>
-            <NavLink href="#about">About</NavLink>
-            <NavLink href="#contact">Contact</NavLink>
-            <ThemeButton onClick={toggleTheme}>{isDark ? '🌞' : '🌙'}</ThemeButton>
+    <div 
+      ref={scrollRef} 
+      className="scrolling-container"
+    >
+      <motion.div className="scrolling-cards" style={{ x }}>
+        {opportunities.concat(opportunities).map((opp, index) => (
+          <ScrollingCard
+            key={index}
+            title={opp.title}
+            description={opp.description}
+            backgroundImage={opp.backgroundImage}
+          />
+        ))}
+      </motion.div>
+    </div>
+  )
+}
+
+function App() {
+  const [isDark, setIsDark] = useState(false)
+  const { scrollYProgress } = useScroll()
+  const navigate = useNavigate(); 
+
+  const toggleTheme = () => {
+    setIsDark(!isDark)
+    if (isDark) {
+      document.documentElement.classList.remove('dark')
+    } else {
+      document.documentElement.classList.add('dark')
+    }
+  }
+
+  return (
+    <div className={`app ${isDark ? 'dark' : ''}`}>
+      <header className="header">
+        <nav className="nav">
+          <div className="nav-content">
+            <div className="logo">
+              <div className="logo-icon">
+                <span>V</span>
+              </div>
+              <GradientText className="logo-text">VYUHA</GradientText>
+            </div>
+            <div className="nav-links">
+              <a href="#features" className="nav-link">Features</a>
+              <a href="#about" className="nav-link">About</a>
+              <a href="#contact" className="nav-link">Contact</a>
+              <button
+                onClick={toggleTheme}
+                className="theme-toggle"
+              >
+                {isDark ? '🌞' : '🌙'}
+              </button>
+            </div>
           </div>
-        </Nav>
-      </Header>
+        </nav>
+      </header>
 
       <main>
-        <HeroSection>
+        <section className="hero">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              Welcome to <GradientText>GigBlock</GradientText>
+            <h1 className="hero-title">
+              Welcome to <GradientText>VYUHA</GradientText>
             </h1>
-            <p className="text-xl mb-8 max-w-2xl mx-auto">
-              Bringing freelancers, gig workers, and companies together for seamless collaboration using blockchain technology.
+            <p className="hero-description">
+              Bringing freelancers, gig workers, and companies together for seamless collaboration.
             </p>
-            <HeroButton as="a" href="/login" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-  Get Started <ChevronRight />
-</HeroButton>
+            <motion.button
+              className="cta-button"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate('/login')} 
+            >
+              Get Started <ChevronRight className="inline-icon" />
+            </motion.button>
           </motion.div>
-        </HeroSection>
+        </section>
 
-        <Section id="about">
-          <SectionTitle>
-            <GradientText>About Us</GradientText>
-          </SectionTitle>
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div>
-              <h3>Our Mission</h3>
-              <p>GigBlock aims to empower gig workers and companies by bridging the gap with innovative blockchain technology.</p>
+        <section id="features" className="features">
+          <div className="container">
+            <h2 className="section-title">
+              <GradientText>Our Features</GradientText>
+            </h2>
+            <div className="features-grid">
+              <Card
+                icon={Users}
+                title="Connect"
+                description="🤝 Bring together freelancers, gig workers, and companies for seamless collaboration."
+              />
+              <Card
+                icon={Globe}
+                title="Global Reach"
+                description="🌍 Access a diverse pool of talent and opportunities from around the world."
+              />
+              <Card
+                icon={Zap}
+                title="Efficient Matching"
+                description="⚡ Our AI-powered system ensures perfect matches for projects and skills."
+              />
+              <Card
+                icon={TrendingUp}
+                title="Career Growth"
+                description="📈 Unlock new opportunities and advance your professional journey."
+              />
             </div>
-            <ul>
-              <li>🚀 Empowering freelancers and gig workers worldwide.</li>
-              <li>🔒 Ensuring secure, trustworthy transactions.</li>
-              <li>📊 Data-driven insights for better collaboration.</li>
-              <li>🌟 User-centric design for an intuitive experience.</li>
-            </ul>
           </div>
-        </Section>
+        </section>
 
-        <Section bg="#f8f9fa">
-          <SectionTitle>
-            <GradientText>Explore Opportunities</GradientText>
-          </SectionTitle>
-          <ScrollingCardsContainer>
-            <ScrollingCard background="https://via.placeholder.com/300x400?text=Web+Development">
-              <h3>Web Development</h3>
-              <p>Create stunning websites and web applications using modern technologies.</p>
-            </ScrollingCard>
-            <ScrollingCard background="https://via.placeholder.com/300x400?text=Mobile+Apps">
-              <h3>Mobile Apps</h3>
-              <p>Build innovative iOS and Android apps reaching millions of users.</p>
-            </ScrollingCard>
-            <ScrollingCard background="https://via.placeholder.com/300x400?text=UI/UX+Design">
-              <h3>UI/UX Design</h3>
-              <p>Design intuitive interfaces and seamless user experiences.</p>
-            </ScrollingCard>
-            <ScrollingCard background="https://via.placeholder.com/300x400?text=Data+Analysis">
-              <h3>Data Analysis</h3>
-              <p>Extract insights from complex data to drive business decisions.</p>
-            </ScrollingCard>
-            <ScrollingCard background="https://via.placeholder.com/300x400?text=Cloud+Solutions">
-              <h3>Cloud Solutions</h3>
-              <p>Implement scalable cloud architectures for optimal performance.</p>
-            </ScrollingCard>
-          </ScrollingCardsContainer>
-        </Section>
+        <section className="opportunities">
+          <div className="container">
+            <h2 className="section-title">
+              <GradientText>Explore Opportunities</GradientText>
+            </h2>
+            <ScrollingCards />
+          </div>
+        </section>
 
-        <Section id="features">
-          <SectionTitle>
-            <GradientText>Our Features</GradientText>
-          </SectionTitle>
-          <CardsGrid>
-            <Card whileHover={{ y: -5 }}>
-              <Users />
-              <h3>Connect</h3>
-              <p>Bring together freelancers, gig workers, and companies for seamless collaboration.</p>
-            </Card>
-            <Card whileHover={{ y: -5 }}>
-              <Globe />
-              <h3>Global Reach</h3>
-              <p>Access a diverse pool of talent and opportunities from around the world.</p>
-            </Card>
-            <Card whileHover={{ y: -5 }}>
-              <Zap />
-              <h3>Efficient Matching</h3>
-              <p>AI-powered system ensures perfect matches for projects and skills.</p>
-            </Card>
-            <Card whileHover={{ y: -5 }}>
-              <TrendingUp />
-              <h3>Career Growth</h3>
-              <p>Unlock new opportunities and advance your professional journey.</p>
-            </Card>
-          </CardsGrid>
-        </Section>
+        <section id="about" className="about">
+          <div className="container">
+            <h2 className="section-title">
+              <GradientText>About Us</GradientText>
+            </h2>
+            <div className="about-content">
+              <div className="about-text">
+                <h3 className="about-subtitle">Our Mission</h3>
+                <p className="about-description">
+                  We strive to create a platform that empowers freelancers, gig workers, and companies to collaborate efficiently and grow together.
+                </p>
+                <ul className="about-list">
+                  <li className="about-list-item">
+                    <TrendingUp className="about-icon" />
+                    Continuous improvement in matching algorithms
+                  </li>
+                  <li className="about-list-item">
+                    <Users className="about-icon" />
+                    User-centric approach to platform design
+                  </li>
+                  <li className="about-list-item">
+                    <Globe className="about-icon" />
+                    Global accessibility for diverse opportunities
+                  </li>
+                </ul>
+              </div>
+              <div className="about-image">
+                <img 
+                  src="https://imgs.search.brave.com/lkZs73RLo9yNvYmylj1qJWp3yH4SCutVYw7k-g9H3Ms/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5saWNkbi5jb20v/ZG1zL2ltYWdlL0Q0/RDEyQVFFT2pqOWxq/a3RkNFEvYXJ0aWNs/ZS1jb3Zlcl9pbWFn/ZS1zaHJpbmtfNzIw/XzEyODAvMC8xNjgw/MDk5MzQ0MDc0P2U9/MjE0NzQ4MzY0NyZ2/PWJldGEmdD1hUmNK/eTY2QVJRX0xSY3Ff/M3czZnZLN2J5cjF6/bmQ1c0xUbWZCdG9y/U0ww" 
+                  alt="About Us" 
+                  className="about-img"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="contact" className="contact">
+          <div className="container">
+            <h2 className="section-title">Get in Touch</h2>
+            <p className="contact-description">
+              Ready to revolutionize your work experience? Join VYUHA today and unlock a world of opportunities!
+            </p>
+            <motion.button
+              className="contact-button"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Contact Us <ArrowRight className="inline-icon" />
+            </motion.button>
+          </div>
+        </section>
       </main>
+
+      <footer className="footer">
+        <div className="container">
+          <div className="footer-content">
+            <div className="footer-section">
+              <GradientText className="footer-logo">VYUHA</GradientText>
+              <p>Connecting talent with opportunity.</p>
+            </div>
+            <div className="footer-section">
+              <h4 className="footer-title">Quick Links</h4>
+              <ul className="footer-links">
+                <li><a href="#" className="footer-link">Home</a></li>
+                <li><a href="#features" className="footer-link">Features</a></li>
+                <li><a href="#about" className="footer-link">About</a></li>
+                <li><a href="#contact" className="footer-link">Contact</a></li>
+              </ul>
+            </div>
+            <div className="footer-section">
+              <h4 className="footer-title">Follow Us</h4>
+              <div className="social-links">
+                <a href="#" className="social-link">Twitter</a>
+                <a href="#" className="social-link">LinkedIn</a>
+                <a href="#" className="social-link">GitHub</a>
+              </div>
+            </div>
+          </div>
+          <div className="footer-bottom">
+            <p>&copy; 2025 VYUHA. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
-  );
+  )
 }
+
+export default App
