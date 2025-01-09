@@ -170,7 +170,15 @@ function App() {
             <NavButton
               key={item.label}
               className={item.label === 'Connect' ? 'connect' : ''}
-              onClick={() => navigate(`/${item.label.toLowerCase()}`)} 
+              onClick={() => {
+                if (item.label === 'Profile') {
+                  navigate('/profile'); 
+                } else if (item.label === 'Contract') {
+                  navigate('/contract'); 
+                } else {
+                  navigate(`/${item.label.toLowerCase()}`); 
+                }
+              }}
             >
               <item.icon size={20} />
               {item.label}
@@ -181,7 +189,6 @@ function App() {
 
       {/* Main Content */}
       <Main>
-        
         <SearchBarContainer>
           <SearchBar placeholder="Search..." />
           <AddProfileButton onClick={handleAddProfileClick}>Add Profile</AddProfileButton>

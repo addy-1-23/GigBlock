@@ -149,27 +149,40 @@ const App = () => {
   const handleAddJobClick = () => {
     navigate("/contract/addJob"); 
   };
+  
+
 
   return (
     <Container>
       {/* Sidebar */}
       <Sidebar>
-        <SidebarLogo>
-          <LogoIcon>V</LogoIcon>
-          <span>Vyuha</span>
-        </SidebarLogo>
-        <AddButton onClick={handleAddJobClick}>Add Job</AddButton>
-        <NavSection>
-          <NavLabel>PAGES</NavLabel>
-          {[{ icon: Home, label: 'Home' }, { icon: FileText, label: 'Contract' }, { icon: Link, label: 'Connect' }, { icon: User, label: 'Profile' }, { icon: MessageCircle, label: 'Chat' }, { icon: Settings, label: 'Settings' }].map((item) => (
-            <NavButton key={item.label} style={{ backgroundColor: item.label === 'Contract' ? '#3b82f6' : 'transparent' }}>
-              <item.icon size={20} />
-              {item.label}
-            </NavButton>
-          ))}
-        </NavSection>
-      </Sidebar>
-
+              <SidebarLogo>
+                <LogoIcon>V</LogoIcon>
+                <span>Vyuha</span>
+              </SidebarLogo>
+              <AddButton>Add</AddButton>
+              <NavSection>
+                <NavLabel>PAGES</NavLabel>
+                {[{ icon: Home, label: 'Home' }, { icon: FileText, label: 'Contract' }, { icon: Link, label: 'Connect' }, { icon: User, label: 'Profile' }, { icon: MessageCircle, label: 'Chat' }, { icon: Settings, label: 'Settings' }].map((item) => (
+                  <NavButton
+                    key={item.label}
+                    className={item.label === 'Contract' ? 'contract' : ''}
+                    onClick={() => {
+                      if (item.label === 'Profile') {
+                        navigate('/profile'); 
+                      } else if (item.label === 'Connect') {
+                        navigate('/connect'); 
+                      } else {
+                        navigate(`/${item.label.toLowerCase()}`); 
+                      }
+                    }}
+                  >
+                    <item.icon size={20} />
+                    {item.label}
+                  </NavButton>
+                ))}
+              </NavSection>
+            </Sidebar>
       {/* Main Content */}
       <Main>
         

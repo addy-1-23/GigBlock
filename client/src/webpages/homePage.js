@@ -267,15 +267,7 @@ export default function Dashboard() {
       height: '300px',
     },
   }
-  const navigate = useNavigate(); // Get navigate function using useNavigate hook
-
-  const handleContract = () => {
-    navigate("/contract"); 
-  };
-  const handleConnect = () => {
-    navigate("/connect"); 
-  };
-
+  
 
 const [userData, setUserData] = useState({
     fullName: "",
@@ -289,7 +281,7 @@ const [userData, setUserData] = useState({
 
     if (token) {
       // Decode JWT token
-      const decoded = jwtDecode(token);  // Correct function name
+      const decoded = jwtDecode(token);  
       console.log("Decoded User Info:", decoded);
 
       // Store the decoded data in state
@@ -304,7 +296,7 @@ const [userData, setUserData] = useState({
     }
   }, []);
 
-
+const navigate = useNavigate(); 
   return (
     
     <div style={styles.container}>
@@ -331,13 +323,12 @@ const [userData, setUserData] = useState({
           <div style={styles.navLabel}>PAGES</div>
           {[
             { icon: Home, label: 'Home' },
-            { icon: FileText, label: 'Contract', onClick: handleContract },
-            { icon: Link, label: 'Connect', onClick: handleConnect },
+            { icon: FileText, label: 'Contract'},
+            { icon: Link, label: 'Connect'},
             { icon: User, label: 'Profile' },
             { icon: MessageCircle , label: 'Chat' },
             { icon: Settings , label: 'Settings' },
           ].map((item) => (
-            
             <button
               key={item.label}
               style={{
@@ -354,11 +345,22 @@ const [userData, setUserData] = useState({
                   e.currentTarget.style.backgroundColor = 'transparent'
                 }
               }}
+              onClick={() => {
+                if (item.label === 'Contract') {
+                  navigate('/contract'); // Navigate to /contract
+                } else if (item.label === 'Profile') {
+                  navigate('/profile'); // Navigate to /profile
+                } else if (item.label === 'Connect') {
+                  navigate('/connect'); // Navigate to /connect
+                } else {
+                  navigate(`/${item.label.toLowerCase()}`); // Default navigation for other labels
+                }
+              }}
             >
               <item.icon size={20} />
               {item.label}
             </button>
-          ))}
+       ))}
         </nav>
       </aside>
 
