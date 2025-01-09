@@ -2,7 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken'); 
-const bcrypt = require('bcryptjs'); // Add bcrypt
+const bcrypt = require('bcryptjs'); 
+
+//Importing the User Schema
 const Users = require('./Users');
 
 // Importing the Job schema
@@ -67,7 +69,7 @@ app.post('/profiles/add', async (req, res) => {
 // Fetch Profiles
 app.get('/profiles/get', async (req, res) => {
   try {
-    const profiles = await Profile.find(); // Fetch all profiles
+    const profiles = await Profile.find(); 
     res.status(200).send(profiles);
   } catch (err) {
     console.error("Error fetching profiles:", err.message);
@@ -113,7 +115,7 @@ app.post("/auth/signup", async (req, res) => {
   }
 });
 
-//Login 
+
 // Login Route with JWT
 app.post("/auth/login", async (req, res) => {
   const { email, password } = req.body;
@@ -144,11 +146,11 @@ app.post("/auth/login", async (req, res) => {
         contact: userDetail.contact,
         place: userDetail.place
       },
-      'your_secret_key', // Replace with your secret key
-      { expiresIn: '1h' } // Token expiry time (1 hour)
+      'ADDY123@', 
+      { expiresIn: '1h' } 
     );
 
-    // Send the token as a response
+    // Send token as a response
     res.status(200).send({ token, userDetail });
   } catch (err) {
     console.error(err);
