@@ -20,12 +20,12 @@ function Login() {
     try {
       const res = await axios.post("/auth/login", { email, password });
       alert("Login successful!");
-      console.log(res.data); // User data
+      console.log(res.data); 
 
       // Store JWT in localStorage
       localStorage.setItem("token", res.data.token);
 
-      navigate("/profile"); // Redirect to the profile page
+      navigate("/profile"); 
     } catch (err) {
       console.error(err);
       if (err.response && err.response.data.error) {
