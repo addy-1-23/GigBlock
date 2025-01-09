@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { Mail, MapPin, Phone, Star,MessageCircle, Settings, Activity, Clock, CheckCircle, Info, Home, FileText, Link, User} from 'lucide-react'
-
+import {jwtDecode} from "jwt-decode";
 import { useNavigate } from 'react-router-dom'; 
 
 export default function Dashboard() {
@@ -10,10 +10,6 @@ export default function Dashboard() {
   const [profileImage, setProfileImage] = useState(null)
   const [activeTab, setActiveTab] = useState('info')
   
- 
-
-  
-
   const handleProfileImageClick = () => {
     const input = document.createElement('input')
     input.type = 'file'
@@ -32,6 +28,8 @@ export default function Dashboard() {
     }
     input.click()
   }
+
+
 
   const styles = {
     container: {
@@ -278,6 +276,35 @@ export default function Dashboard() {
     navigate("/connect"); 
   };
 
+
+const [userData, setUserData] = useState({
+    fullName: "",
+    email: "",
+    contact: "",
+    place: "",
+  });
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      // Decode JWT token
+      const decoded = jwtDecode(token);  // Correct function name
+      console.log("Decoded User Info:", decoded);
+
+      // Store the decoded data in state
+      setUserData({
+        fullName: decoded.name,
+        email: decoded.email,
+        contact: decoded.contact,
+        place: decoded.place,
+      });
+    } else {
+      console.log("No token found.");
+    }
+  }, []);
+
+
   return (
     
     <div style={styles.container}>
@@ -358,7 +385,7 @@ export default function Dashboard() {
                 {!profileImage && 'T'}
               </div>
               <div style={styles.profileInfo}>
-                <h2 style={styles.profileName}>Tarush Nigam</h2>
+                <h2 style={styles.profileName}>{userData.fullName}</h2>
                 <div style={styles.rating}>
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} size={20} fill="#fbbf24" />
@@ -411,15 +438,15 @@ export default function Dashboard() {
                 <div style={styles.infoGrid}>
                   <div style={styles.infoItem}>
                     <Mail size={20} />
-                    <span>tarush.nigam@example.com</span>
+                    <span>{userData.email}</span>
                   </div>
                   <div style={styles.infoItem}>
                     <Phone size={20} />
-                    <span>+91 98765 43210</span>
+                    <span>{userData.contact}</span>
                   </div>
                   <div style={styles.infoItem}>
                     <MapPin size={20} />
-                    <span>Mumbai, Maharashtra</span>
+                    <span>{userData.place}</span>
                   </div>
                   <div style={styles.infoItem}>
                     <Activity size={20} />

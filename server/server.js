@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-
+const jwt = require('jsonwebtoken'); 
 const bcrypt = require('bcryptjs'); // Add bcrypt
 const Users = require('./Users');
 
@@ -114,6 +114,7 @@ app.post("/auth/signup", async (req, res) => {
 });
 
 //Login 
+// Login Route with JWT
 app.post("/auth/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -134,12 +135,25 @@ app.post("/auth/login", async (req, res) => {
       return res.status(401).send({ error: "Invalid Password" });
     }
 
-    res.status(200).send(userDetail);
+    // Generate JWT token
+    const token = jwt.sign(
+      {
+        id: userDetail._id,
+        name: userDetail.fullName,
+        email: userDetail.email,
+        contact: userDetail.contact,
+        place: userDetail.place
+      },
+      'your_secret_key', // Replace with your secret key
+      { expiresIn: '1h' } // Token expiry time (1 hour)
+    );
+
+    // Send the token as a response
+    res.status(200).send({ token, userDetail });
   } catch (err) {
     console.error(err);
     res.status(500).send({ error: "Server Error" });
   }
 });
-
 // Start the server
 app.listen(port, () => console.log(`API running on port ${port}`));

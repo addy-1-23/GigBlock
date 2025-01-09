@@ -21,7 +21,11 @@ function Login() {
       const res = await axios.post("/auth/login", { email, password });
       alert("Login successful!");
       console.log(res.data); // User data
-      navigate("/profile"); // Redirect to the home page or dashboard
+
+      // Store JWT in localStorage
+      localStorage.setItem("token", res.data.token);
+
+      navigate("/profile"); // Redirect to the profile page
     } catch (err) {
       console.error(err);
       if (err.response && err.response.data.error) {
@@ -64,6 +68,7 @@ function Login() {
     </Container>
   );
 }
+
 
 const Container = styled.div`
   width: 40%;
