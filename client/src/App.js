@@ -10,6 +10,7 @@ import Job from "./components/addJob";
 import Login from "./components/login";
 import SignUp from "./components/signUp";
 
+
 function App() {
   return (
     <Router>

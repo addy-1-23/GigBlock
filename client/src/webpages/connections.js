@@ -8,9 +8,9 @@ function Jobs() {
     return (
       <Container>
         <FrameConn /> 
-        <MainContent>
-          <ProfileCards />
-        </MainContent>
+          <MainContent>
+            <ProfileCards />
+          </MainContent>
       </Container>
     );
   }

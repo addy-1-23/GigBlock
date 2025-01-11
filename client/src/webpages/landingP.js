@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { motion, useScroll, useMotionValue, animate } from 'framer-motion'
-import { ChevronRight, Zap, Globe, Users, TrendingUp, ArrowRight } from 'lucide-react'
-import './App.css'
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, useScroll, useMotionValue, animate } from 'framer-motion';
+import { ChevronRight, Zap, Globe, Users, TrendingUp, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
+import './App.css';
+import ParticlesCanvas from '../components/particle'; // Import the ParticlesCanvas component
 
 const GradientText = ({ children, className = '' }) => {
   return (
@@ -23,30 +23,25 @@ const GradientText = ({ children, className = '' }) => {
         </motion.span>
       ))}
     </span>
-  )
-}
-
+  );
+};
 
 
 const Card = ({ icon: Icon, title, description }) => (
-  <motion.div
-    className="card"
-    whileHover={{ y: -5 }}
-  >
+  <motion.div className="card" whileHover={{ y: -5 }}>
     <Icon className="card-icon" />
     <h3 className="card-title">{title}</h3>
     <p className="card-description">{description}</p>
   </motion.div>
-)
+);
 
 const ScrollingCard = ({ title, description, backgroundImage }) => (
   <motion.div
-  
     className="scrolling-card"
     style={{ 
       backgroundImage: `linear-gradient(rgba(234, 218, 218, 0), rgba(0, 0, 0, 0.8)), url(${backgroundImage})`,
+
     }}
-    
     whileHover={{ scale: 1.05 }}
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
@@ -56,43 +51,39 @@ const ScrollingCard = ({ title, description, backgroundImage }) => (
     <h3 className="scrolling-card-title">{title}</h3>
     <p className="scrolling-card-description">{description}</p>
   </motion.div>
-)
+);
 
 const ScrollingCards = () => {
-  const scrollRef = useRef(null)
-  const [containerWidth, setContainerWidth] = useState(0)
-  const x = useMotionValue(0)
+  const scrollRef = useRef(null);
+  const [containerWidth, setContainerWidth] = useState(0);
+  const x = useMotionValue(0);
 
   useEffect(() => {
     const updateContainerWidth = () => {
       if (scrollRef.current) {
-        setContainerWidth(scrollRef.current.offsetWidth)
+        setContainerWidth(scrollRef.current.offsetWidth);
       }
-    }
+    };
 
-    updateContainerWidth()
-    window.addEventListener('resize', updateContainerWidth)
+    updateContainerWidth();
+    window.addEventListener('resize', updateContainerWidth);
 
-    return () => window.removeEventListener('resize', updateContainerWidth)
-  }, [])
+    return () => window.removeEventListener('resize', updateContainerWidth);
+  }, []);
 
   const opportunities = [
     { 
-      title: "Singer ", 
+      title: "Singer", 
       description: "Express emotions through powerful vocals and captivating performances.",
       backgroundImage: "https://t3.ftcdn.net/jpg/03/35/61/94/360_F_335619416_FUfMwM82oomNuLVpYZDaRmqWysnldkbj.jpg"
-      
     },
     { 
       title: "Dancer", 
-      description: "Tell stories and convey emotion through graceful and dynamic movement..",
-      backgroundImage: "https://imgs.search.brave.com/O_pFatsKoJzZy03W67yKC-2tVIJ1AyfTqIUt7YkoP2E/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzAxLzc0LzkxLzI4/LzM2MF9GXzE3NDkx/Mjg5OF9ZR3lESE5T/TDhiNk1GbERxWTdh/MzZTUXAzNTZHTDBM/ai5qcGc",
-      ObjectFit: "cover"
-     
+      description: "Tell stories and convey emotion through graceful and dynamic movement.",
+      backgroundImage: "https://imgs.search.brave.com/O_pFatsKoJzZy03W67yKC-2tVIJ1AyfTqIUt7YkoP2E/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzAxLzc0LzkxLzI4/LzM2MF9GXzE3NDkx/Mjg5OF9ZR3lESE5T/TDhiNk1GbERxWTdh/MzZTUXAzNTZHTDBM/ai5qcGc"
     },
-    
     { 
-      title: "Pianist ", 
+      title: "Pianist", 
       description: "Create beautiful melodies and harmonies with the piano.",
       backgroundImage: "https://imgs.search.brave.com/jVynVawXKK0zMqTBCA4iFiC1Yvb9y_YUe4k2I47Nld8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzE0LzY1Lzgz/LzM2MF9GXzIxNDY1/ODM0MF9MdXkwc0JZ/T01uSWdCUG45dUhr/MWVzSGtTZHJLUGJt/Yi5qcGc?text=piano"
     },
@@ -106,10 +97,9 @@ const ScrollingCards = () => {
       description: "Bring characters and worlds to life through animation.",
       backgroundImage: "https://media.tenor.com/3CAcy1xJSIcAAAAe/anime-dark-boy-cool-kid.png"
     },
-  ]
+  ];
 
-
-  const totalWidth = opportunities.length * 280 // 280px per card (including margins)
+  const totalWidth = opportunities.length * 280; // 280px per card (including margins)
 
   useEffect(() => {
     const animation = animate(x, -totalWidth, {
@@ -118,16 +108,13 @@ const ScrollingCards = () => {
       ease: "linear",
       repeat: Infinity,
       repeatType: "loop",
-    })
+    });
 
-    return () => animation.stop()
-  }, [x, totalWidth])
+    return () => animation.stop();
+  }, [x, totalWidth]);
 
   return (
-    <div 
-      ref={scrollRef} 
-      className="scrolling-container"
-    >
+    <div ref={scrollRef} className="scrolling-container">
       <motion.div className="scrolling-cards" style={{ x }}>
         {opportunities.concat(opportunities).map((opp, index) => (
           <ScrollingCard
@@ -139,42 +126,44 @@ const ScrollingCards = () => {
         ))}
       </motion.div>
     </div>
-  )
-}
+  );
+};
 
 function App() {
-  const [isDark, setIsDark] = useState(false)
-  const { scrollYProgress } = useScroll()
+  const [isDark, setIsDark] = useState(false);
+  const { scrollYProgress } = useScroll();
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const navigate = useNavigate(); 
-
   const toggleTheme = () => {
-    setIsDark(!isDark)
+    setIsDark(!isDark);
     if (isDark) {
-      document.documentElement.classList.remove('dark')
+      document.documentElement.classList.remove('dark');
     } else {
-      document.documentElement.classList.add('dark')
+      document.documentElement.classList.add('dark');
     }
-  }
+  };
+
+  // Update mouse position
+  const handleMouseMove = (e) => {
+    setMousePosition({ x: e.clientX, y: e.clientY });
+  };
 
   return (
-    <div className={`app ${isDark ? 'dark' : ''}`}>
-      <header className="header">
+<div className={`app ${isDark ? 'dark' : ''}`} onMouseMove={handleMouseMove}>
+<header className="header">
         <nav className="nav">
           <div className="nav-content">
             <div className="logo">
               <div className="logo-icon">
                 <span>V</span>
               </div>
-              <GradientText className="logo-text">VYUHA</GradientText>
+              <GradientText className="logo-text">VYU:</GradientText>
             </div>
             <div className="nav-links">
               <a href="#features" className="nav-link">Features</a>
               <a href="#about" className="nav-link">About</a>
               <a href="#contact" className="nav-link">Contact</a>
-              <button
-                onClick={toggleTheme}
-                className="theme-toggle"
-              >
+              <button onClick={toggleTheme} className="theme-toggle">
                 {isDark ? '🌞' : '🌙'}
               </button>
             </div>
@@ -183,14 +172,17 @@ function App() {
       </header>
 
       <main>
-        <section className="hero">
+        <section className="hero" style={{ position: 'relative', height: '100vh' }}>
+          <ParticlesCanvas /> {/* Add the ParticlesCanvas component here */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
+            className="hero-background"
+            style={{ position: 'relative', zIndex: 1 }} // Ensure content is above the canvas
           >
             <h1 className="hero-title">
-              Welcome to <GradientText>VYUHA</GradientText>
+              Welcome to <GradientText>VYU:</GradientText>
             </h1>
             <p className="hero-description">
               Bringing freelancers, gig workers, and companies together for seamless collaboration.
@@ -273,7 +265,7 @@ function App() {
               </div>
               <div className="about-image">
                 <img 
-                  src="https://imgs.search.brave.com/lkZs73RLo9yNvYmylj1qJWp3yH4SCutVYw7k-g9H3Ms/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5saWNkbi5jb20v/ZG1zL2ltYWdlL0Q0/RDEyQVFFT2pqOWxq/a3RkNFEvYXJ0aWNs/ZS1jb3Zlcl9pbWFn/ZS1zaHJpbmtfNzIw/XzEyODAvMC8xNjgw/MDk5MzQ0MDc0P2U9/MjE0NzQ4MzY0NyZ2/PWJldGEmdD1hUmNK/eTY2QVJRX0xSY3Ff/M3czZnZLN2J5cjF6/bmQ1c0xUbWZCdG9y/U0ww" 
+                  src="https://imgs.search.brave.com/EiO0nKbOHjx1uqDAW14hS55pjdKDsl1qgIV2b_xRi-M/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Y3JlYXRvcHkuY29t/L2Jsb2cvd3AtY29u/dGVudC91cGxvYWRz/LzIwMjAvMDQvY29s/bGFib3JhdGlvbi1h/bmQtY3JlYXRpdml0/eS0xLTgwMHg0MDAu/cG5n" 
                   alt="About Us" 
                   className="about-img"
                 />
@@ -298,39 +290,8 @@ function App() {
           </div>
         </section>
       </main>
-
-      <footer className="footer">
-        <div className="container">
-          <div className="footer-content">
-            <div className="footer-section">
-              <GradientText className="footer-logo">VYUHA</GradientText>
-              <p>Connecting talent with opportunity.</p>
-            </div>
-            <div className="footer-section">
-              <h4 className="footer-title">Quick Links</h4>
-              <ul className="footer-links">
-                <li><a href="#" className="footer-link">Home</a></li>
-                <li><a href="#features" className="footer-link">Features</a></li>
-                <li><a href="#about" className="footer-link">About</a></li>
-                <li><a href="#contact" className="footer-link">Contact</a></li>
-              </ul>
-            </div>
-            <div className="footer-section">
-              <h4 className="footer-title">Follow Us</h4>
-              <div className="social-links">
-                <a href="#" className="social-link">Twitter</a>
-                <a href="#" className="social-link">LinkedIn</a>
-                <a href="#" className="social-link">GitHub</a>
-              </div>
-            </div>
-          </div>
-          <div className="footer-bottom">
-            <p>&copy; 2025 VYUHA. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

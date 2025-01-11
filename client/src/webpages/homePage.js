@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect, useRef } from 'react'
 import { Mail, MapPin, Phone, Star,MessageCircle, Settings, Activity, Clock, CheckCircle, Info, Home, FileText, Link, User} from 'lucide-react'
 import {jwtDecode} from "jwt-decode";

@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Mukta:wght@400;700&display=swap');
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -11,6 +12,7 @@
   --foreground-rgb: 255, 255, 255;
   --background-start-rgb: 0, 0, 0;
   --background-end-rgb: 10, 10, 10;
+  --font-family: 'Inter', sans-serif;
 }
 
 body {
@@ -34,9 +36,18 @@ body {
 
 .gradient-text {
   background-clip: text;
-  -webkit-background-clip: text;
+ 
   color: transparent;
-  background-image: linear-gradient(to right, #9333ea, #3b82f6);
+  background-image: linear-gradient(to right, #8015e3, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  text-fill-color: transparent;
+}
+
+.gradient-text.dark-hover:hover {
+  transform: scale(1.1);
+  filter: blur(2px); /* Add blur effect */
 }
 
 .header {
@@ -45,12 +56,12 @@ body {
   left: 0;
   right: 0;
   z-index: 50;
-  background-color: #ffffff;
+  background-color: #ffffffdb;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
 .dark .header {
-  background-color: #1f2937;
+  background-color: #05050538;
 }
 
 .nav {
@@ -68,26 +79,28 @@ body {
 .logo {
   display: flex;
   align-items: center;
+  margin-left: -6rem;
 }
 
 .logo-icon {
   background-color: #000000;
   border-radius: 9999px;
-  width: 2rem;
-  height: 2rem;
+  width: 4rem;
+  height: 4rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 0.5rem;
+  margin-right: 0.7rem;
+  font-size: 2rem;
 }
 
 .logo-icon span {
   color: #ffffff;
-  font-weight: bold;
+  font-weight: lighter;
 }
 
 .logo-text {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: bold;
 }
 
@@ -99,12 +112,16 @@ body {
   color: #06eaea;
 }
 
-
-
 .nav-link {
   transition: color 0.3s;
   text-decoration: none;
   color: #7c06ea;
+}
+
+.dark .nav-link {
+  transition: color 0.3s;
+  text-decoration: none;
+  color: #ffffff;
 }
 
 .nav-link:hover {
@@ -173,17 +190,12 @@ body {
 
 .gradient-text-letter {
   display: inline-block;
-  cursor: pointer;
-  transition: all 0.1s ease;
-  color: inherit; /* Ensures the gradient color remains intact */
+  transition: transform 0.1s ease, text-shadow 0.3s ease;
 }
-
-
 
 .cta-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 6px -1px rgb(255, 255, 255), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-
 }
 
 .inline-icon {
@@ -232,7 +244,7 @@ body {
   padding: 1.5rem;
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s;
+  transition: all 0.1s;
 }
 
 .dark .card {
@@ -253,11 +265,11 @@ body {
 }
 
 .card-description {
-  color: #9a09ef;
+  color: #8a07ee;
 }
 
 .dark .card-description {
-  color: #09d1eb;
+  color: #acc6c9;
 }
 
 .opportunities {
@@ -306,7 +318,6 @@ body {
   border-color: #374151;
 }
 
-
 .scrolling-card-title {
   font-size: 1.25rem;
   font-weight: bold;
@@ -315,7 +326,7 @@ body {
 }
 
 .dark .scrolling-card-title {
-  color: #000000;
+  color: #ffffff;
 }
 
 .scrolling-card-description {
@@ -326,7 +337,7 @@ body {
 }
 
 .dark .scrolling-card-description {
-  color: #06eaea;
+  color: #aeabb0;
 }
 
 .about {
@@ -364,8 +375,6 @@ body {
   list-style-type: none;
   padding: 0;
 }
-
-
 
 .about-list-item {
   display: flex;
@@ -496,3 +505,33 @@ body {
   color: #06eaea;
 }
 
+:root {
+  --purple: #9333EA;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.3);
+}
+
+body {
+  font-size: 16px;
+  letter-spacing: normal;
+}
