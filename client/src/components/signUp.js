@@ -40,7 +40,7 @@ function SignUp() {
 
   // Password validation
   const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,}$/;
+    const passwordRegex = /^(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%*?&]{7,}$/;
     if (!passwordRegex.test(password)) {
       setPasswordError("Password must be at least 7 characters long, include one uppercase letter, one number, one special character, and no spaces");
     } else {
@@ -84,10 +84,10 @@ function SignUp() {
   return (
     <Container>
       <Logo onClick={() => navigate("/profile")}>
-        <img src="./logo.png" alt="GigBlock Logo" />
+        <img src="./logo.png" alt="VYUHA Logo" />
       </Logo>
       <FormContainer>
-        <h3>Sign-Up</h3>
+        <h3>Sign Up</h3>
         {error && <ErrorText>{error}</ErrorText>}
         <InputContainer>
           <p>Full Name</p>
@@ -118,7 +118,7 @@ function SignUp() {
             }}
             value={email}
           />
-          {emailError && <ErrorText>{emailError}</ErrorText>} {/* Show email error */}
+          {emailError && <ErrorText>{emailError}</ErrorText>}
         </InputContainer>
         <InputContainer>
           <p>Contact Number</p>
@@ -131,7 +131,7 @@ function SignUp() {
             }}
             value={contact}
           />
-          {contactError && <ErrorText>{contactError}</ErrorText>} {/* Show contact number error */}
+          {contactError && <ErrorText>{contactError}</ErrorText>}
         </InputContainer>
         <InputContainer>
           <p>Place</p>
@@ -146,25 +146,25 @@ function SignUp() {
           <p>Password</p>
           <input
             type="password"
-            placeholder="********"
+            placeholder=""
             onChange={(e) => {
               setPassword(e.target.value);
               validatePassword(e.target.value);
             }}
             value={password}
           />
-          {passwordError && <ErrorText>{passwordError}</ErrorText>} {/* Show password error */}
+          {passwordError && <ErrorText>{passwordError}</ErrorText>}
         </InputContainer>
         <InputContainer>
           <p>Confirm Password</p>
           <input
             type="password"
-            placeholder="********"
+            placeholder=""
             onChange={(e) => setConfirmPassword(e.target.value)}
             value={confirmPassword}
           />
         </InputContainer>
-        <SignUpButton onClick={signup}>Create Account in GigBlock</SignUpButton>
+        <SignUpButton onClick={signup}>Create Account in VYUHA</SignUpButton>
       </FormContainer>
       <LoginButton onClick={() => navigate("/login")}>Back to Login</LoginButton>
     </Container>
@@ -172,92 +172,124 @@ function SignUp() {
 }
 
 const Container = styled.div`
-  width: 40%;
-  min-width: 450px;
-  height: fit-content;
-  padding: 15px;
+  width: 100%;
+  max-width: 500px;
+  min-height: 100vh;
+  padding: 2rem;
   margin: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  background-color:rgba(249, 249, 249, 0);
 `;
 
 const Logo = styled.div`
   width: 120px;
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
   img {
     width: 100%;
   }
 `;
 
 const FormContainer = styled.form`
-  border: 1px solid lightgray;
-  width: 55%;
-  height: auto;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 15px;
 
   h3 {
-    font-size: 28px;
-    font-weight: 400;
-    line-height: 33px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1.5rem;
     align-self: flex-start;
-    margin-bottom: 10px;
   }
 `;
 
 const InputContainer = styled.div`
   width: 100%;
-  padding: 10px;
+  margin-bottom: 1rem;
 
   p {
     font-size: 14px;
     font-weight: 600;
+    color: #555;
+    margin-bottom: 0.5rem;
   }
 
   input {
-    width: 95%;
-    height: 33px;
-    padding-left: 5px;
-    border-radius: 5px;
-    border: 1px solid lightgray;
-    margin-top: 5px;
+    width: 100%;
+    height: 40px;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    transition: border-color 0.2s ease-in-out;
 
-    &:hover {
-      border: 1px solid orange;
+    &:focus {
+      outline: none;
+      border-color:rgb(53, 0, 246);
+      box-shadow: 0 0 0 2px rgba(243, 180, 20, 0.2);
     }
   }
 `;
 
 const SignUpButton = styled.button`
   width: 100%;
-  height: 35px;
-  font-size: 12px;
-  margin-top: 20px;
+  height: 40px;
+  background-color: #8804fc;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  margin-top: 1rem;
 
   &:hover {
-    background-color: #dfdfdf;
-    border: 1px solid gray;
+    background-color: rgb(60, 0, 171);
   }
 `;
 
 const ErrorText = styled.p`
-  color: red;
+  color: #e74c3c;
   font-size: 14px;
-  margin-top: 5px;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  width: 100%;
 `;
 
 const LoginButton = styled.button`
-  width: 55%;
-  height: 35px;
-  background-color: #f3b414;
-  border: none;
-  outline: none;
-  border-radius: 10px;
-  margin-top: 30px;
+  width: 100%;
+  height: 40px;
+  background-color: #fff;
+  color: #8804fc;
+  font-size: 16px;
+  font-weight: 600;
+  border: 2px solid #8804fc;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin-top: 1rem;
+
+  &:hover {
+    background-color: rgb(60, 0, 171);
+    color: #fff;
+  }
 `;
 
 export default SignUp;

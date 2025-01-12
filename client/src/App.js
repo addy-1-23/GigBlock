@@ -9,7 +9,7 @@ import Conn from "./components/addProfile";
 import Job from "./components/addJob";
 import Login from "./components/login";
 import SignUp from "./components/signUp";
-
+import Setting from "./components/setting";
 
 function App() {
   return (
@@ -19,6 +19,7 @@ function App() {
           <Route path="/profile" element={<Home />} />
           <Route path="/connect" element={<Connect />} />
           <Route path="/contract" element={<Contract />} />
+          <Route path="/settings" element={<Setting />} />
           <Route path="/connect/addProf" element={<Conn />} />
           <Route path="/contract/addJob" element={<Job />} />
           <Route path="/login" element={<Login />} />

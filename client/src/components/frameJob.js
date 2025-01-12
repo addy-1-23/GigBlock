@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom'; 
 
-import { MessageCircle, Settings, Home, FileText, Link, User } from 'lucide-react';
+import { MessageCircle, Settings, Home, FileText, Link} from 'lucide-react';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -163,15 +163,18 @@ const App = () => {
               <AddButton>Add</AddButton>
               <NavSection>
                 <NavLabel>PAGES</NavLabel>
-                {[{ icon: Home, label: 'Home' }, { icon: FileText, label: 'Contract' }, { icon: Link, label: 'Connect' }, { icon: User, label: 'Profile' }, { icon: MessageCircle, label: 'Chat' }, { icon: Settings, label: 'Settings' }].map((item) => (
+                {[{ icon: Home, label: 'Home' }, { icon: FileText, label: 'Contract' }, { icon: Link, label: 'Connect' },{ icon: MessageCircle, label: 'Chat' }, { icon: Settings, label: 'Settings' }].map((item) => (
                   <NavButton
                     key={item.label}
                     className={item.label === 'Contract' ? 'contract' : ''}
                     onClick={() => {
-                      if (item.label === 'Profile') {
+                      if (item.label === 'Home') {
                         navigate('/profile'); 
                       } else if (item.label === 'Connect') {
                         navigate('/connect'); 
+                      }
+                      else if (item.label === 'Settings') {
+                        navigate('/settings'); 
                       } else {
                         navigate(`/${item.label.toLowerCase()}`); 
                       }
