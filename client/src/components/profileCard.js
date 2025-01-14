@@ -194,7 +194,12 @@ function ProfileCards() {
     const fetchProfiles = async () => {
       try {
         const response = await axios.get("/profiles/get");
-        setProfiles(response.data);
+        // Add a `connected` field to each profile with an initial value of `false`
+        const updatedProfiles = response.data.map((profile) => ({
+          ...profile,
+          connected: false,
+        }));
+        setProfiles(updatedProfiles);
       } catch (error) {
         console.error("Error fetching profiles:", error.message);
       }
@@ -205,11 +210,9 @@ function ProfileCards() {
 
   useEffect(() => {
     if (selectedProfile) {
-      // Prevent scrolling in the background when the modal is open
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden"; // Prevent background scrolling
     } else {
-      // Allow scrolling again when the modal is closed
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = "auto"; // Allow scrolling
     }
   }, [selectedProfile]);
 
@@ -225,6 +228,16 @@ function ProfileCards() {
       if (direction === "prev" && prevPage > 1) return prevPage - 1;
       return prevPage;
     });
+  };
+
+  const handleConnectClick = (profileIndex) => {
+    setProfiles((prevProfiles) =>
+      prevProfiles.map((profile, index) =>
+        index === profileIndex
+          ? { ...profile, connected: !profile.connected }
+          : profile
+      )
+    );
   };
 
   const handleAboutProfileClick = (profile) => {
@@ -250,27 +263,10 @@ function ProfileCards() {
                 <div style={styles.cardLabel}>Skills</div>
                 <div style={styles.skillsContainer}>
                   {profile.skills?.map((skill, idx) => (
-                    <div key={idx} style={styles.skill}>{skill}</div>
-                  )) || "N/A"}
-                </div>
-              </div>
-
-              <div style={styles.cardField}>
-                <div style={styles.cardLabel}>Experience</div>
-                <div style={styles.timelineContainer}>
-                  {profile.experiences?.map((exp, idx) => (
-                    <div key={idx} style={styles.experienceItem}>
-                      <div style={styles.timelineDot}></div>
-                      <div style={styles.timelineLine}></div>
-                      <div style={styles.experienceDate}>
-                        {new Date(exp.startDate).toLocaleDateString()} -{" "}
-                        {exp.endDate ? new Date(exp.endDate).toLocaleDateString() : "Present"}
-                      </div>
-                      <div style={styles.cardValue}>
-                        <strong>{exp.companyName}</strong> - {exp.role}
-                      </div>
+                    <div key={idx} style={styles.skill}>
+                      {skill}
                     </div>
-                  )) || "No experience added"}
+                  )) || "N/A"}
                 </div>
               </div>
             </div>
@@ -282,7 +278,20 @@ function ProfileCards() {
               >
                 About Profile
               </button>
-              <button style={styles.button}>Connect</button>
+              <button
+                style={{
+                  ...styles.button,
+                  backgroundColor: profile.connected ? "green" : "blue",
+                  color: "white",
+                }}
+                onClick={() =>
+                  handleConnectClick(
+                    (currentPage - 1) * cardsPerPage + index
+                  )
+                }
+              >
+                {profile.connected ? "Connected" : "Connect"}
+              </button>
             </div>
           </div>
         ))}
@@ -327,7 +336,9 @@ function ProfileCards() {
             </div>
             <div style={styles.modalField}>
               <span style={styles.modalLabel}>Contact Number:</span>
-              <span style={styles.modalValue}>{selectedProfile.contactNumber}</span>
+              <span style={styles.modalValue}>
+                {selectedProfile.contactNumber}
+              </span>
             </div>
             <div style={styles.modalField}>
               <span style={styles.modalLabel}>Skills:</span>
@@ -336,7 +347,7 @@ function ProfileCards() {
               </span>
             </div>
 
-            {/* Experience Section with Timeline Effect */}
+            {/* Experience Section */}
             <div style={styles.modalField}>
               <span style={styles.modalLabel}>Experience:</span>
               <div style={styles.timelineContainer}>
@@ -346,13 +357,14 @@ function ProfileCards() {
                     <div style={styles.timelineLine}></div>
                     <div style={styles.experienceDate}>
                       {new Date(exp.startDate).toLocaleDateString()} -{" "}
-                      {exp.endDate ? new Date(exp.endDate).toLocaleDateString() : "Present"}
+                      {exp.endDate
+                        ? new Date(exp.endDate).toLocaleDateString()
+                        : "Present"}
                     </div>
                     <div style={styles.modalValue}>
                       <strong>{exp.companyName}</strong> - {exp.role}
                     </div>
                     <div style={styles.modalValue}>{exp.description}</div>
-                    <hr />
                   </div>
                 )) || <span style={styles.modalValue}>No experience added</span>}
               </div>
@@ -360,25 +372,26 @@ function ProfileCards() {
 
             {/* Projects Section */}
             <div style={styles.modalField}>
-  <span style={styles.modalLabel}>Projects:</span>
-  <div style={{ marginTop: '10px' }}>
-    {selectedProfile.projects?.length > 0 ? (
-      selectedProfile.projects.map((project, index) => (
-        <div key={index} style={{ marginBottom: '20px' }}>
-          <div style={styles.cardValue}>
-            <strong>{project.projectName}</strong>
-          </div>
-          <div style={styles.modalValue}>{project.aboutProject}</div>
-          <div style={styles.modalValue}>
-            <strong>Technologies:</strong> {project.technologies.join(", ")}
-          </div>
-        </div>
-      ))
-    ) : (
-      <span style={styles.modalValue}>No projects added</span>
-    )}
-  </div>
-</div>
+              <span style={styles.modalLabel}>Projects:</span>
+              <div style={{ marginTop: "10px" }}>
+                {selectedProfile.projects?.length > 0 ? (
+                  selectedProfile.projects.map((project, index) => (
+                    <div key={index} style={{ marginBottom: "20px" }}>
+                      <div style={styles.cardValue}>
+                        <strong>{project.projectName}</strong>
+                      </div>
+                      <div style={styles.modalValue}>{project.aboutProject}</div>
+                      <div style={styles.modalValue}>
+                        <strong>Technologies:</strong>{" "}
+                        {project.technologies.join(", ")}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <span style={styles.modalValue}>No projects added</span>
+                )}
+              </div>
+            </div>
 
             <button style={styles.closeModalButton} onClick={handleCloseModal}>
               Close

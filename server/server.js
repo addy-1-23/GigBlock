@@ -76,7 +76,6 @@ app.post('/profiles/add', async (req, res) => {
   }
 });
 
-
 // Fetch Profiles
 app.get('/profiles/get', async (req, res) => {
   try {
@@ -168,5 +167,22 @@ app.post("/auth/login", async (req, res) => {
     res.status(500).send({ error: "Server Error" });
   }
 });
+
+
+//fetch bio
+// Fetch Profiles with Optional Filtering
+app.get('/profiles/bio', async (req, res) => {
+  try {
+    const { email } = req.query;
+    const filter = email ? { emailId: email } : {};
+    const profiles = await Profile.find(filter); // Filter by email if provided
+    res.status(200).json(profiles);
+  } catch (err) {
+    console.error('Error fetching profiles:', err.message);
+    res.status(500).send({ error: 'Failed to fetch profiles', details: err.message });
+  }
+});
+
+
 // Start the server
 app.listen(port, () => console.log(`API running on port ${port}`));
