@@ -56,7 +56,17 @@ app.post('/profiles/add', async (req, res) => {
   try {
     const profileData = req.body;
 
-    const newProfile = new Profile(profileData);
+    const newProfile = new Profile({
+      username: profileData.username,
+      bio: profileData.bio,
+      dateOfBirth: profileData.dateOfBirth,
+      emailId: profileData.emailId,
+      contactNumber: profileData.contactNumber,
+      skills: profileData.skills,
+      experiences: profileData.experiences,
+      projects: profileData.projects,
+    });
+
     await newProfile.save();
 
     res.status(201).send("Profile added successfully");
@@ -66,11 +76,12 @@ app.post('/profiles/add', async (req, res) => {
   }
 });
 
+
 // Fetch Profiles
 app.get('/profiles/get', async (req, res) => {
   try {
     const profiles = await Profile.find(); 
-    res.status(200).send(profiles);
+    res.status(200).json(profiles);
   } catch (err) {
     console.error("Error fetching profiles:", err.message);
     res.status(500).send({ error: "Failed to fetch profiles", details: err.message });

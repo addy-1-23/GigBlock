@@ -9,10 +9,12 @@ function AddProfileForm() {
   const [emailId, setEmailId] = useState("");
   const [contactNumber, setContactNumber] = useState("");
   const [skills, setSkills] = useState([""]);
-  const [certifications, setCertifications] = useState([
-    { certificationName: "", certificationDate: "", document: "" },
+  const [projects, setProjects] = useState([
+    { projectName: "", aboutProject: "", technologies: "" }
   ]);
-  const [experience, setExperience] = useState("");
+  const [experiences, setExperiences] = useState([
+    { companyName: "", role: "", startDate: "", endDate: "", description: "" }
+  ]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,9 +35,6 @@ function AddProfileForm() {
       case "contact_number":
         setContactNumber(value);
         break;
-      case "experience":
-        setExperience(value);
-        break;
       default:
         break;
     }
@@ -51,17 +50,24 @@ function AddProfileForm() {
     setSkills([...skills, ""]);
   };
 
-  const handleCertificationChange = (index, field, value) => {
-    const updatedCertifications = [...certifications];
-    updatedCertifications[index][field] = value;
-    setCertifications(updatedCertifications);
+  const handleProjectChange = (index, field, value) => {
+    const updatedProjects = [...projects];
+    updatedProjects[index][field] = value;
+    setProjects(updatedProjects);
   };
 
-  const addCertificationField = () => {
-    setCertifications([
-      ...certifications,
-      { certificationName: "", certificationDate: "", document: "" },
-    ]);
+  const addProjectField = () => {
+    setProjects([...projects, { projectName: "", aboutProject: "", technologies: "" }]);
+  };
+
+  const handleExperienceChange = (index, field, value) => {
+    const updatedExperiences = [...experiences];
+    updatedExperiences[index][field] = value;
+    setExperiences(updatedExperiences);
+  };
+
+  const addExperienceField = () => {
+    setExperiences([...experiences, { companyName: "", role: "", startDate: "", endDate: "", description: "" }]);
   };
 
   const handleSubmit = (e) => {
@@ -74,8 +80,8 @@ function AddProfileForm() {
       emailId,
       contactNumber,
       skills,
-      certifications,
-      experience,
+      projects,
+      experiences,
     };
 
     axios
@@ -87,8 +93,8 @@ function AddProfileForm() {
         setEmailId("");
         setContactNumber("");
         setSkills([""]);
-        setCertifications([{ certificationName: "", certificationDate: "", document: "" }]);
-        setExperience("");
+        setProjects([{ projectName: "", aboutProject: "", technologies: "" }]);
+        setExperiences([{ companyName: "", role: "", startDate: "", endDate: "", description: "" }]);
         alert("Profile added successfully!");
       })
       .catch((error) => alert(error.message));
@@ -182,60 +188,111 @@ function AddProfileForm() {
         </div>
 
         <div style={styles.formGroup}>
-          <label style={styles.label}>Certifications</label>
-          {certifications.map((certification, index) => (
+          <label style={styles.label}>Projects</label>
+          {projects.map((project, index) => (
             <div key={index} style={styles.skillsetContainer}>
               <input
                 type="text"
-                name={`certification_name_${index}`}
-                value={certification.certificationName}
+                name={`project_name_${index}`}
+                value={project.projectName}
                 onChange={(e) =>
-                  handleCertificationChange(index, "certificationName", e.target.value)
+                  handleProjectChange(index, "projectName", e.target.value)
                 }
                 style={styles.input}
-                placeholder="Certification Name"
+                placeholder="Project Name"
               />
-              <input
-                type="date"
-                name={`certification_date_${index}`}
-                value={certification.certificationDate}
+              <textarea
+                name={`about_project_${index}`}
+                value={project.aboutProject}
                 onChange={(e) =>
-                  handleCertificationChange(index, "certificationDate", e.target.value)
+                  handleProjectChange(index, "aboutProject", e.target.value)
                 }
-                style={styles.input}
+                style={styles.textarea}
+                placeholder="About Project"
               />
               <input
                 type="text"
-                name={`document_${index}`}
-                value={certification.document}
+                name={`technologies_${index}`}
+                value={project.technologies}
                 onChange={(e) =>
-                  handleCertificationChange(index, "document", e.target.value)
+                  handleProjectChange(index, "technologies", e.target.value)
                 }
                 style={styles.input}
-                placeholder="Document URL"
+                placeholder="Technologies"
               />
             </div>
           ))}
           <button
             type="button"
-            onClick={addCertificationField}
+            onClick={addProjectField}
             style={styles.addButton}
           >
             <FaPlus style={styles.addIcon} />
-            Add Certification
+            Add Project
           </button>
         </div>
 
         <div style={styles.formGroup}>
           <label style={styles.label}>Experience</label>
-          <input
-            type="text"
-            name="experience"
-            value={experience}
-            onChange={handleChange}
-            style={styles.input}
-            required
-          />
+          {experiences.map((exp, index) => (
+            <div key={index} style={styles.skillsetContainer}>
+              <input
+                type="text"
+                name={`company_name_${index}`}
+                value={exp.companyName}
+                onChange={(e) =>
+                  handleExperienceChange(index, "companyName", e.target.value)
+                }
+                style={styles.input}
+                placeholder="Company Name"
+              />
+              <input
+                type="text"
+                name={`role_${index}`}
+                value={exp.role}
+                onChange={(e) =>
+                  handleExperienceChange(index, "role", e.target.value)
+                }
+                style={styles.input}
+                placeholder="Role"
+              />
+              <input
+                type="date"
+                name={`start_date_${index}`}
+                value={exp.startDate}
+                onChange={(e) =>
+                  handleExperienceChange(index, "startDate", e.target.value)
+                }
+                style={styles.input}
+              />
+              <input
+                type="date"
+                name={`end_date_${index}`}
+                value={exp.endDate}
+                onChange={(e) =>
+                  handleExperienceChange(index, "endDate", e.target.value)
+                }
+                style={styles.input}
+              />
+              <textarea
+                name={`description_${index}`}
+                value={exp.description}
+                onChange={(e) =>
+                  handleExperienceChange(index, "description", e.target.value)
+                }
+                style={styles.textarea}
+                placeholder="Experience Description"
+              />
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={addExperienceField}
+            style={styles.addButton}
+          >
+            <FaPlus style={styles.addIcon} />
+            Add Experience
+          </button>
         </div>
 
         <button type="submit" style={styles.submitButton}>SUBMIT</button>
@@ -243,8 +300,6 @@ function AddProfileForm() {
     </div>
   );
 }
-
-
 const styles = {
   formContainer: {
     backgroundColor: '#f7f9fc',
