@@ -523,7 +523,7 @@ export default function Dashboard() {
               onClick={() => {
                 if (item.label === 'Contract') {
                   navigate('/contract'); // Navigate to /contract
-                } else if (item.label === 'Home') {
+                } else if (item.label === 'Profile') {
                   navigate('/profile'); // Navigate to /profile
                 } else if (item.label === 'Connect') {
                   navigate('/connect'); // Navigate to /connect
@@ -614,8 +614,7 @@ export default function Dashboard() {
                   }
                 }}
               >
-                {profileExists ? <User size={20} /> : <UserPen size={20} />}
-                {profileExists ? 'Edit Profile' : 'Add Profile'}
+                {profileExists ? <UserPen size={20} /> : <User size={20} />}
               </button>
               <button 
                 style={styles.circularButton} 
@@ -629,7 +628,7 @@ export default function Dashboard() {
                   e.currentTarget.style.boxShadow = 'none'; // Remove shadow
                 }}
               >
-                <FileText size={20} />
+                <FilePlus size={20} />
               </button>
               <button 
                 style={styles.circularButton} 
