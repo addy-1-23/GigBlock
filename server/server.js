@@ -160,28 +160,47 @@ app.post("/auth/login", async (req, res) => {
       { expiresIn: '1h' } 
     );
 
-    // Send token as a response
-    res.status(200).send({ token, userDetail });
+    // Send token and connections as a response
+    res.status(200).send({ token, userDetail, connections: userDetail.connections });
   } catch (err) {
     console.error(err);
     res.status(500).send({ error: "Server Error" });
   }
 });
+// Connect/Disconnect User
+app.post("/auth/connect", async (req, res) => {
+  console.log("Received connect request:", req.body); // Log the request body
+  const { userId, connect } = req.body;
+  const userIdFromSession = req.body.currentUserId;
 
-
-//fetch bio
-// Fetch Profiles with Optional Filtering
-app.get('/profiles/bio', async (req, res) => {
   try {
-    const { email } = req.query;
-    const filter = email ? { emailId: email } : {};
-    const profiles = await Profile.find(filter); // Filter by email if provided
-    res.status(200).json(profiles);
+    let updatedUser;
+    if (connect) {
+      updatedUser = await Users.findByIdAndUpdate(
+        userIdFromSession,
+        { $addToSet: { connections: userId } }, // Add to connections
+        { new: true } // Return the updated document
+      );
+    } else {
+      updatedUser = await Users.findByIdAndUpdate(
+        userIdFromSession,
+        { $pull: { connections: userId } }, // Remove from connections
+        { new: true } // Return the updated document
+      );
+    }
+    
+    if (updatedUser) {
+      res.status(200).send({ message: connect ? "Connected successfully" : "Disconnected successfully", connections: updatedUser.connections });
+    } else {
+      res.status(404).send({ error: "User not found" });
+    }
   } catch (err) {
-    console.error('Error fetching profiles:', err.message);
-    res.status(500).send({ error: 'Failed to fetch profiles', details: err.message });
+    console.error("Error updating connections:", err.message);
+    res.status(500).send({ error: "Failed to update connections", details: err.message });
   }
 });
+
+
 
 
 // Start the server
