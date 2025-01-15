@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; 
+
 import axios from "../axios";
 import { Home, FileText, Link, User, MessageCircle, Settings, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -450,6 +452,7 @@ function ProfileCardsWithSidebar() {
     // The search is already being handled by the filteredProfiles
     // This function is here in case you want to add any additional search functionality
   };
+  const navigate = useNavigate(); 
 
   const Sidebar = () => (
     <aside style={styles.sidebar}>
@@ -481,7 +484,6 @@ function ProfileCardsWithSidebar() {
           { icon: Home, label: 'Home' },
           { icon: FileText, label: 'Contract' },
           { icon: Link, label: 'Connect' },
-          { icon: User, label: 'Profile' },
           { icon: MessageCircle, label: 'Chat' },
           { icon: Settings, label: 'Settings' },
         ].map((item) => (
@@ -499,6 +501,17 @@ function ProfileCardsWithSidebar() {
                 onMouseLeave={(e) => {
                   if (item.label !== 'Connect') {
                     e.currentTarget.style.backgroundColor = 'transparent'
+                  }
+                }}
+                onClick={() => {
+                  if (item.label === 'Contract') {
+                    navigate('/contract'); // Navigate to /contract
+                  } else if (item.label === 'Home') {
+                    navigate('/profile'); // Navigate to /profile
+                  } else if (item.label === 'Connect') {
+                    navigate('/connect'); // Navigate to /connect
+                  } else {
+                    navigate(`/${item.label.toLowerCase()}`); // Default navigation for other labels
                   }
                 }}
               >

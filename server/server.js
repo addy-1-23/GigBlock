@@ -200,7 +200,66 @@ app.post("/auth/connect", async (req, res) => {
   }
 });
 
+// Fetch User Connections with Usernames
+app.get('/auth/connections', async (req, res) => {
+  const { email } = req.query;
 
+  try {
+    // Find the user by email and populate connections with profile data
+    const userDetail = await Users.findOne({ email }).populate({
+      path: 'connections',
+      model: 'profile', // Reference to the Profile model
+      select: 'username' // Only select the username field
+    });
+
+    if (!userDetail) {
+      return res.status(404).send({ error: "User not found" });
+    }
+
+    res.status(200).send({ connections: userDetail.connections });
+  } catch (err) {
+    console.error("Error fetching connections:", err.message);
+    res.status(500).send({ error: "Failed to fetch connections", details: err.message });
+  }
+});
+
+
+// Update Profile
+app.put('/profiles/update', async (req, res) => {
+  try {
+    const profileData = req.body;
+
+    if (!profileData.emailId) {
+      return res.status(400).send({ error: "Email ID is required to update the profile." });
+    }
+
+    // Find the profile by email and update the fields
+    const updatedProfile = await Profile.findOneAndUpdate(
+      { emailId: profileData.emailId },
+      {
+        $set: {
+          username: profileData.username,
+          bio: profileData.bio,
+          dateOfBirth: profileData.dateOfBirth,
+          contactNumber: profileData.contactNumber,
+          skills: profileData.skills,
+          projects: profileData.projects,
+          experiences: profileData.experiences,
+        },
+      },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedProfile) {
+      return res.status(404).send({ error: "Profile not found for the given email ID." });
+    }
+
+    res.status(200).send({ message: "Profile updated successfully", profile: updatedProfile });
+  } catch (err) {
+    console.error("Error updating profile:", err.message);
+    res.status(500).send({ error: "Failed to update profile", details: err.message });
+  }
+});
 
 
 // Start the server

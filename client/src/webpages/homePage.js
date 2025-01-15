@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Mail, MapPin, Phone, Star, MessageCircle, Settings, Activity, Info, Home, FileText, Link, User, FilePlus, Moon, Briefcase, Sun, Users, X, MoreHorizontal, Inbox } from 'lucide-react';
+import { Mail, MapPin, Phone, Star, MessageCircle, Settings, Activity, Home, FileText, Link, User, FilePlus, Moon, Briefcase, Sun, Users, X, MoreHorizontal, Inbox, UserPen } from 'lucide-react';
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from 'react-router-dom'; 
 import JobApplicantsList from '../components/jobApp';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { MessageBox } from '../components/messagebox'; // Update this import
-
 
 export default function Dashboard() {
   const [isDark, setIsDark] = useState(false);
@@ -22,7 +21,7 @@ export default function Dashboard() {
   const [isApplicantsListOpen, setIsApplicantsListOpen] = useState(false); // State for job applicants list
   const [applicants, setApplicants] = useState([]); // State for applicants data
   const [isMessageBoxOpen, setIsMessageBoxOpen] = useState(false); // New state for message box
-
+  const [profileExists, setProfileExists] = useState(false); // State to track if profile exists
   // Sample applicants data
   const sampleApplicants = [
     { id: 1, name: 'Alice Johnson', avatar: '' },
@@ -448,34 +447,27 @@ export default function Dashboard() {
         .then((response) => {
           const profile = response.data.find((p) => p.emailId === decoded.email);
           setUserBio(profile?.bio || 'Bio not available'); // Update bio or show fallback text
+          setProfileExists(!!profile); // Check if profile exists
         })
         .catch((error) => {
           console.error('Error fetching bio:', error);
         });
-    
-      // Mock connections data with 20 connections
-      setConnections([
-        { id: 1, name: 'John Doe', avatar: 'JD' },
-        { id: 2, name: 'Jane Smith', avatar: 'JS' },
-        { id: 3, name: 'Alice Johnson', avatar: 'AJ' },
-        { id: 4, name: 'Bob Brown', avatar: 'BB' },
-        { id: 5, name: 'Charlie Davis', avatar: 'CD' },
-        { id: 6, name: 'Emily Clark', avatar: 'EC' },
-        { id: 7, name: 'Frank Harris', avatar: 'FH' },
-        { id: 8, name: 'Grace Lee', avatar: 'GL' },
-        { id: 9, name: 'Henry Walker', avatar: 'HW' },
-        { id: 10, name: 'Isabella Hall', avatar: 'IH' },
-        { id: 11, name: 'Jack Wilson', avatar: 'JW' },
-        { id: 12, name: 'Liam Martinez', avatar: 'LM' },
-        { id: 13, name: 'Mia Anderson', avatar: 'MA' },
-        { id: 14, name: 'Noah Thomas', avatar: 'NT' },
-        { id: 15, name: 'Olivia Taylor', avatar: 'OT' },
-        { id: 16, name: 'Parker Moore', avatar: 'PM' },
-        { id: 17, name: 'Quinn Jackson', avatar: 'QJ' },
-        { id: 18, name: 'Riley White', avatar: 'RW' },
-        { id: 19, name: 'Sophia Harris', avatar: 'SH' },
-        { id: 20, name: 'Tyler Lewis', avatar: 'TL' },
-      ]);
+
+      // Fetch connections based on email
+      axios
+        .get(`http://localhost:4000/auth/connections`, {
+          params: { email: decoded.email },
+        })
+        .then((response) => {
+          if (response.data && response.data.connections) {
+            setConnections(response.data.connections); // Set the actual connections
+          } else {
+            console.error('No connections found in response:', response.data);
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching connections:', error);
+        });
     }
   }, []);
 
@@ -507,7 +499,6 @@ export default function Dashboard() {
             { icon: Home, label: 'Home' },
             { icon: FileText, label: 'Contract'},
             { icon: Link, label: 'Connect'},
-            { icon: User, label: 'Profile' },
             { icon: MessageCircle , label: 'Chat' },
             { icon: Settings , label: 'Settings' },
           ].map((item) => (
@@ -532,7 +523,7 @@ export default function Dashboard() {
               onClick={() => {
                 if (item.label === 'Contract') {
                   navigate('/contract'); // Navigate to /contract
-                } else if (item.label === 'Profile') {
+                } else if (item.label === 'Home') {
                   navigate('/profile'); // Navigate to /profile
                 } else if (item.label === 'Connect') {
                   navigate('/connect'); // Navigate to /connect
@@ -568,7 +559,7 @@ export default function Dashboard() {
                 }}
                 onClick={handleProfileImageClick}
               >
-                {!profileImage && 'T'}
+                {!profileImage && `${userData.fullName[0]}`}
               </div>
               <div style={styles.profileInfo}>
                 <h2 style={styles.profileName}>{userData.fullName}</h2>
@@ -578,9 +569,11 @@ export default function Dashboard() {
                   ))}
                 </div>
                 <div style={{...styles.profileDetail, color: '#4ade80'}}>{userBio}</div>
-                <div style={{...styles.profileDetail,color: `${isDark ? '#ffffff' : '#000000'}`}}>
+                <div style={{...styles.profileDetail, color: '#4ade80'}}>
                   <Users size={16} />
-                  <span onClick={() => setIsConnectionsOpen(true)} style={{ cursor: 'pointer' }}>Connections: 299</span>
+                  <span onClick={() => setIsConnectionsOpen(true)} style={{ cursor: 'pointer' }}>
+                    Connections: {connections.length} {/* Display actual number of connections */}
+                  </span>
                 </div> 
               </div>
             </div>
@@ -613,8 +606,16 @@ export default function Dashboard() {
                   e.currentTarget.style.transform = 'scale(1)'; // Reset scale
                   e.currentTarget.style.boxShadow = 'none'; // Remove shadow
                 }}
+                onClick={() => {
+                  if (profileExists) {
+                    navigate('/editprof'); // Navigate to edit profile
+                  } else {
+                    navigate('/addprof'); // Navigate to add profile
+                  }
+                }}
               >
-                <FileText size={20} />
+                {profileExists ? <User size={20} /> : <UserPen size={20} />}
+                {profileExists ? 'Edit Profile' : 'Add Profile'}
               </button>
               <button 
                 style={styles.circularButton} 
@@ -628,7 +629,7 @@ export default function Dashboard() {
                   e.currentTarget.style.boxShadow = 'none'; // Remove shadow
                 }}
               >
-                <FilePlus size={20} />
+                <FileText size={20} />
               </button>
               <button 
                 style={styles.circularButton} 
@@ -741,24 +742,8 @@ export default function Dashboard() {
           <div style={styles.connectionsPopup}>
             <h3 style={{ marginBottom: '10px', fontWeight: 'bold' }}>Your Connections</h3>
             {connections.map((connection) => (
-              <div key={connection.id} style={styles.connectionCard}>
-                <div style={styles.connectionAvatar}>{connection.avatar}</div>
-                <span>{connection.name}</span>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  {showRequestButton[connection.id] && (
-                    <button 
-                      style={styles.sendRequestButton}
-                      onClick={() => handleSendRequest(connection.id)}
-                    >
-                      {sentRequests[connection.id] ? 'SENT' : 'Send Team Request'}
-                    </button>
-                  )}
-                  <MoreHorizontal 
-                    size={20} 
-                    onClick={() => setShowRequestButton((prev) => ({ ...prev, [connection.id]: !prev[connection.id] }))}
-                    style={{ cursor: 'pointer', marginLeft: '10px' }} 
-                  />
-                </div>
+              <div key={connection._id} style={styles.connectionCard}>
+                <span>{connection.username}</span> {/* Display username */}
               </div>
             ))}
             <button 
@@ -824,7 +809,7 @@ export default function Dashboard() {
                 <div style={styles.infoGrid}>
                   <div style={styles.infoItem}>
                     <Mail size={20} />
-                    <span>{userData.email}</span>
+                    <span>{userData.email}</span> {/* see this */}
                   </div>
                   <div style={styles.infoItem}>
                     <Phone size={20} />
@@ -847,4 +832,3 @@ export default function Dashboard() {
     </div>
   );
 }
-
